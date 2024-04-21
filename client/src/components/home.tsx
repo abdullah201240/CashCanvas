@@ -31,7 +31,7 @@ const Home = (props: any) => {
         <View style={styles.optionsRow}>
           <View style={styles.option}>
             <Image style={styles.logo} source={require("../../assets/addmoney.webp")} />
-            <Text>Add Money</Text>
+            <Text>Add Card</Text>
           </View>
           <View style={styles.option}>
             <Image style={styles.logo} source={require("../../assets/sentMoney.png")} />
