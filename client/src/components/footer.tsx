@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View ,Image} from 'react-native'
 import React from 'react'
 
-const Footer = () => {
+const Footer = (props: any) => {
+    
   return (
     <View style={styles.futerContainer}>
     <View style={styles.futerRow}>
       <View style={styles.futer}>
+
         <Image style={styles.logo} source={require("../../assets/home.png")} />
         <Text>Home</Text>
       </View>

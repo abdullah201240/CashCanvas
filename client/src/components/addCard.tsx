@@ -1,7 +1,6 @@
-import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput,Image, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, Image, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import RNPickerSelect from 'react-native-picker-select';
-import Footer from './footer';
 const AddCard = (props: any) => {
     const [cardNumber, setCardNumber] = useState('');
     const [amount, setAmount] = useState('');
@@ -15,13 +14,13 @@ const AddCard = (props: any) => {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={[styles.navbar, { backgroundColor: 'green' }]}>
-            <View style={styles.leftNavbar}>
+                <View style={styles.leftNavbar}>
 
-                <Text style={{ color: "white", fontSize: 50, paddingTop: 20 }}>Add Card</Text>
-            </View>
-            <View style={styles.rightNavbar}>
-          <Image style={styles.logo} source={require("../../assets/logo1.png")} />
-        </View>
+                    <Text style={{ color: "white", fontSize: 50, paddingTop: 20 }}>Add Card</Text>
+                </View>
+                <View style={styles.rightNavbar}>
+                    <Image style={styles.logo} source={require("../../assets/logo1.png")} />
+                </View>
             </View>
             <KeyboardAvoidingView style={styles.contentContainer} behavior="padding" enabled>
                 <View style={styles.inputContainer}>
@@ -61,7 +60,31 @@ const AddCard = (props: any) => {
                     </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>
-           <Footer/>
+            <View style={styles.futerContainer}>
+                <View style={styles.futerRow}>
+                    <View style={styles.futer}>
+
+                        <Image style={styles.logo} source={require("../../assets/home.png")} />
+                        <Text>Home</Text>
+                    </View>
+                    <View style={styles.option}>
+                        <Image style={styles.logo} source={require("../../assets/history.png")} />
+                        <Text>History</Text>
+                    </View>
+                    <View style={styles.option}>
+                        <Image style={styles.logo} source={require("../../assets/saving.png")} />
+                        <Text>Saving</Text>
+                    </View>
+                    <View style={styles.option}>
+                        <Image style={styles.logo} source={require("../../assets/schedule.png")} />
+                        <Text>Schedule</Text>
+                    </View>
+                    <View style={styles.option}>
+                        <Image style={styles.logo} source={require("../../assets/notifications.png")} />
+                        <Text>Inbox</Text>
+                    </View>
+                </View>
+            </View>
         </ScrollView>
     )
 }
@@ -71,7 +94,7 @@ export default AddCard;
 const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
-            },
+    },
     navbar: {
         flexDirection: 'row',
         paddingHorizontal: 20,
@@ -82,20 +105,20 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginLeft: 50,
 
-        
-      },
-      rightNavbar: {
+
+    },
+    rightNavbar: {
         flexDirection: 'row',
         marginLeft: 60,
-        marginTop:20
-      },
-      
+        marginTop: 20
+    },
+
     contentContainer: {
 
         alignItems: 'center',
         justifyContent: 'center',
         paddingTop: 120,
-        backgroundColor:"white"
+        backgroundColor: "white"
     },
     inputContainer: {
         width: 350,
@@ -117,7 +140,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 50,
         marginBottom: 10,
-        marginLeft:70
+        marginLeft: 70
     },
     buttonText: {
         color: 'white',
@@ -127,8 +150,36 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         resizeMode: 'contain',
-      },
-    
+    },
+    futerContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        backgroundColor: '#fff',
+
+    },
+    futerRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+        flex: 1,
+
+    },
+    futer: {
+        alignItems: 'center',
+        flex: 1,
+        marginHorizontal: 10,
+        paddingVertical: 20,
+    },
+    option: {
+        alignItems: 'center',
+        flex: 1,
+        marginHorizontal: 5,
+        paddingVertical: 20,
+    },
+
+
 });
 
 const pickerSelectStyles = StyleSheet.create({
@@ -138,10 +189,10 @@ const pickerSelectStyles = StyleSheet.create({
         paddingHorizontal: 10,
         borderWidth: 1,
         borderColor: 'gray',
-        
+
         borderRadius: 50,
         color: 'black',
-        paddingRight: 30, 
+        paddingRight: 30,
         marginBottom: 10,
     },
     inputAndroid: {
@@ -152,8 +203,8 @@ const pickerSelectStyles = StyleSheet.create({
         borderColor: 'gray',
         borderRadius: 50,
         color: 'black',
-        paddingRight: 30, 
+        paddingRight: 30,
         marginBottom: 10,
     },
-    
+
 });
