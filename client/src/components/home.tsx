@@ -3,14 +3,20 @@ import React from 'react';
 import { LineChart } from "react-native-chart-kit";
 
 const Home = (props: any) => {
+  const { user } = props.route.params;
+
   return (
     <ScrollView style={styles.container}>
 
       <View style={[styles.navbar, { backgroundColor: 'green' }]}>
         <View style={styles.leftNavbar}>
-          <Image style={styles.logo} source={require("../../assets/logo.png")} />
+        {user.photo === "photo" ? (
+            <Image style={styles.logo} source={require("../../assets/user.png")} />
+          ) : (
+            <Image style={styles.logo} source={require("../../assets/logo.png")} />
+          )}
           <View style={styles.nameAndAmount}>
-            <Text style={{ fontSize: 30,color:"white" }}>Name</Text>
+            <Text style={{ fontSize: 20,color:"white" }}>{user.name}</Text>
             <Text style={{ fontSize: 50,color:"white" }}>500 tk</Text>
           </View>
 

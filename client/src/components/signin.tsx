@@ -16,7 +16,7 @@ const Signin = (props: any) => {
       });
 
       if (response.status === 200) {
-        const { email, name, phone, photo } = response.data.data;
+        const { email, name, phone, photo,address,nid } = response.data.data;
 
         if (email) {
           props.navigation.navigate('Home', {
@@ -25,6 +25,8 @@ const Signin = (props: any) => {
               name: name as string,
               phone: phone as string,
               photo: photo as string,
+              address: address as string,
+              nid: nid as string,
             },
           });
           console.log('Login successful');
