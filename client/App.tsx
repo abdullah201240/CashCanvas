@@ -6,6 +6,7 @@ import Signin from './src/components/signin';
 import Signup from './src/components/signup';
 
 import Home from './src/components/home';
+import AddCard from './src/components/addCard';
 const Stack = createStackNavigator();
 
 
@@ -17,6 +18,7 @@ export default function App() {
         <Stack.Screen name="Signin" component={Signin} options={{ headerShown: false }}  />
         <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }}  />
         <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}  />
+        <Stack.Screen name="AddCard" component={AddCard} options={{ headerShown: false }}  />
 
       </Stack.Navigator>
     </NavigationContainer>

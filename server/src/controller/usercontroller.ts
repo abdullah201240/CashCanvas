@@ -55,7 +55,7 @@ const Login = async (req: Request, res: Response) => {
             message: 'Login successful',
             token, 
 
-            data: { name, phone, email,photo} 
+            data: { name, phone, email,photo,password} 
         });
     } catch (error) {
         console.error('Error in login:', error);

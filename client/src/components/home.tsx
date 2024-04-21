@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, Image, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, ScrollView,TouchableOpacity } from 'react-native';
 import React from 'react';
 import { LineChart } from "react-native-chart-kit";
-
+import Footer from './footer';
 const Home = (props: any) => {
   const { user } = props.route.params;
 
@@ -30,8 +30,10 @@ const Home = (props: any) => {
       <View style={styles.optionsContainer}>
         <View style={styles.optionsRow}>
           <View style={styles.option}>
+          <TouchableOpacity onPress={() => props.navigation.navigate('AddCard', { user })}>
             <Image style={styles.logo} source={require("../../assets/addmoney.webp")} />
             <Text>Add Card</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.option}>
             <Image style={styles.logo} source={require("../../assets/sentMoney.png")} />
@@ -99,32 +101,8 @@ const Home = (props: any) => {
           }}
         />
       </View>
-      <View style={styles.futerContainer}>
-        <View style={styles.futerRow}>
-          <View style={styles.futer}>
-            <Image style={styles.logo} source={require("../../assets/home.png")} />
-            <Text>Home</Text>
-          </View>
-          <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/history.jpeg")} />
-            <Text>History</Text>
-          </View>
-          <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/saving.png")} />
-            <Text>Saving</Text>
-          </View>
-          <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/schedule.png")} />
-            <Text>Schedule</Text>
-          </View>
-          <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/notifications.png")} />
-            <Text>Inbox</Text>
-          </View>
-        </View>
-        </View>        
-
-
+     
+<Footer />
 
 
       
@@ -184,20 +162,5 @@ const styles = StyleSheet.create({
     height: 50,
     resizeMode: 'contain',
   },
-  futerContainer: {
-    flexDirection: 'column',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    backgroundColor: '#fff', 
-  },
-  futerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  futer: {
-    alignItems: 'center',
-    flex: 1, 
-    marginHorizontal: 10, 
-    paddingVertical: 20,
-  },
+  
 });
