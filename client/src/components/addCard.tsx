@@ -30,6 +30,18 @@ const AddCard = (props: any) => {
                         value={cardNumber}
                         onChangeText={(text) => setCardNumber(text)}
                     />
+                    <RNPickerSelect
+                        style={pickerSelectStyles}
+                        onValueChange={(value) => setAccountType(value)}
+                        items={[
+                            { label: 'Card', value: 'card' },
+                            { label: 'Bkash', value: 'bkash' },
+                            { label: 'Nagad', value: 'nogot' },
+                            { label: 'Rocket', value: 'roket' },
+                            { label: 'Upay', value: 'upay' },
+                        ]}
+                        value={accountType}
+                    />
                     <TextInput
                         style={styles.input}
                         placeholder="Amount"
@@ -43,18 +55,7 @@ const AddCard = (props: any) => {
                         value={pin}
                         onChangeText={(text) => setPin(text)}
                     />
-                    <RNPickerSelect
-                        style={pickerSelectStyles}
-                        onValueChange={(value) => setAccountType(value)}
-                        items={[
-                            { label: 'Card', value: 'card' },
-                            { label: 'Bkash', value: 'bkash' },
-                            { label: 'Nagad', value: 'nogot' },
-                            { label: 'Rocket', value: 'roket' },
-                            { label: 'Upay', value: 'upay' },
-                        ]}
-                        value={accountType}
-                    />
+                    
                     <TouchableOpacity style={styles.buttonContainer} onPress={handleSignup}>
                         <Text style={styles.buttonText}>Add</Text>
                     </TouchableOpacity>
