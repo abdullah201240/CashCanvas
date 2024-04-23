@@ -129,6 +129,7 @@ const Home = (props: any) => {
 
 
 
+
     </ScrollView>
   );
 }
