@@ -3,6 +3,7 @@ import{Request,Response} from "express";
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import AddCard from "../model/addCard";
+import Transaction from "../model/transaction";
 const defaultSecretKey = crypto.randomBytes(32).toString('hex');
 
 import bcrypt from 'bcrypt';
@@ -96,7 +97,23 @@ const AllAccount = async (req: Request, res: Response) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+const AllTransaction = async (req: Request, res: Response) => {
+    try {
+        const { email,cardNumber, cardType, ammount} = req.body;
+
+        if (!email || !cardNumber || !cardType || !ammount) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+        const newCard = new AddCard({ cardNumber, cardType, ammount, email });
+        await newCard.save();
+
+        return res.status(201).json({ message: 'Card Add successfully' });
+    } catch (error) {
+        console.error('Error in Add Card:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 
 
-export { Signup, Login,AddCards,AllAccount };
+export { Signup, Login,AddCards,AllAccount,AllTransaction };

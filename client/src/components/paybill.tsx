@@ -32,29 +32,39 @@ const Paybill = (props: any) => {
                         email: user.email,
                     },
                 });
-    
-                console.log(response.data.accounts.map((account: { cardType: string }) => account.cardType));
-                
+
+
                 if (!response.data.accounts.length) {
                     throw new Error('No account types found');
                 }
-                
-                const cardTypes = response.data.accounts.map((account: { cardType: string }) => account.cardType);
-                setAccountTypes(cardTypes);
+
+                const accountData = response.data.accounts.map((account: { cardType: string, cardNumber: string }) => ({
+                    label: `${account.cardType} (${account.cardNumber})`,
+                    value: account.cardNumber
+                }));
+                setAccountTypes(accountData);
             } catch (error) {
                 console.error('Error fetching account types:', error);
             }
         };
-    
+
         if (user && user.email) {
             fetchAccountTypes();
         }
     }, [user]);
-    
-    
+
+
 
 
     const handleAddCard = () => {
+        console.log(value)
+        console.log(value1)
+        console.log(pin)
+        console.log(amount)
+
+
+
+
     };
 
     return (
@@ -94,7 +104,7 @@ const Paybill = (props: any) => {
 
 <Dropdown
     style={[styles.dropdown, isFocus1 && { borderColor: 'blue' }]}
-    data={accountTypes.map((type, index) => ({ label: type, value: index.toString() }))}
+    data={accountTypes}
     labelField="label"
     valueField="value"
     placeholder={!isFocus1 ? 'Account' : '...'}
@@ -106,6 +116,7 @@ const Paybill = (props: any) => {
         setIsFocus1(false);
     }}
 />
+
 
 
 
