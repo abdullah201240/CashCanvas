@@ -1,5 +1,5 @@
 import User from "../model/usermodel";
-import{Request,Response} from "express";
+import { Request, Response } from "express";
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import AddCard from "../model/addCard";
@@ -52,12 +52,12 @@ const Login = async (req: Request, res: Response) => {
         }
         const token = jwt.sign({ userId: user._id }, defaultSecretKey, { expiresIn: '1h' });
 
-        const { name, phone,photo } = user;
+        const { name, phone, photo } = user;
         return res.status(200).json({
             message: 'Login successful',
-            token, 
+            token,
 
-            data: { name, phone, email,photo,password} 
+            data: { name, phone, email, photo, password }
         });
     } catch (error) {
         console.error('Error in login:', error);
@@ -66,7 +66,7 @@ const Login = async (req: Request, res: Response) => {
 };
 const AddCards = async (req: Request, res: Response) => {
     try {
-        const { email,cardNumber, cardType, ammount} = req.body;
+        const { email, cardNumber, cardType, ammount } = req.body;
 
         if (!email || !cardNumber || !cardType || !ammount) {
             return res.status(400).json({ error: 'All fields are required' });
@@ -89,7 +89,7 @@ const AllAccount = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Email is required' });
         }
 
-        const accounts = await AddCard.find({  email: email  });
+        const accounts = await AddCard.find({ email: email });
 
         return res.status(200).json({ accounts });
     } catch (error) {
@@ -106,7 +106,7 @@ const AllTransaction = async (req: Request, res: Response) => {
         }
 
         const account = await AddCard.findOne({ email, cardType });
-        
+
         if (!account) {
             return res.status(404).json({ error: 'Account not found' });
         }
@@ -115,7 +115,7 @@ const AllTransaction = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Insufficient balance' });
         }
         const newBalance = parseInt(account.ammount) - parseInt(ammount);
-        await AddCard.findOneAndUpdate({ email, cardType ,cardNumber}, { $set: { ammount: newBalance } });
+        await AddCard.findOneAndUpdate({ email, cardType, cardNumber }, { $set: { ammount: newBalance } });
 
 
 
@@ -136,7 +136,7 @@ const AllAmount = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Email is required' });
         }
 
-        const accounts = await AddCard.find({  email: email  });
+        const accounts = await AddCard.find({ email: email });
 
         const totalAmount = accounts.reduce((total, account) => parseInt(String(total)) + parseInt(account.ammount), 0);
 
@@ -146,6 +146,19 @@ const AllAmount = async (req: Request, res: Response) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+const DeleteAccount = async (req: Request, res: Response) => {
+    try {
+        const { cardNumber, cardType, email } = req.query;
+        const card = await AddCard.findOneAndDelete({ cardNumber, cardType, email });
+        if (card) {
+            return res.status(200).json({ message: 'Card deleted successfully' });
+        } else {
+            return res.status(404).json({ message: 'Card not found' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
 
 
 
@@ -153,4 +166,5 @@ const AllAmount = async (req: Request, res: Response) => {
 
 
 
-export { Signup, Login,AddCards,AllAccount,AllTransaction,AllAmount };
+
+export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount ,DeleteAccount};
