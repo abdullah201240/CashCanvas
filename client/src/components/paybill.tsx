@@ -22,8 +22,16 @@ const Paybill = (props: any) => {
     const [amount, setAmount] = useState('');
     const [pin, setPin] = useState('');
     const [isFocus1, setIsFocus1] = useState(false);
-    const [value1, setValue1] = useState<string | null>(null);
-    const [accountTypes, setAccountTypes] = useState([]);
+    const [value1, setValue1] = useState<{ cardType: string; cardNumber: string } | null>(null);
+    interface AccountType {
+        label: string;
+        value: {
+            cardType: string;
+            cardNumber: string;
+        };
+    }
+    
+    const [accountTypes, setAccountTypes] = useState<AccountType[]>([]);
     useEffect(() => {
         const fetchAccountTypes = async () => {
             try {
@@ -32,21 +40,21 @@ const Paybill = (props: any) => {
                         email: user.email,
                     },
                 });
-
-
+        
                 if (!response.data.accounts.length) {
                     throw new Error('No account types found');
                 }
-
-                const accountData = response.data.accounts.map((account: { cardType: string, cardNumber: string }) => ({
+        
+                const accountData: AccountType[] = response.data.accounts.map((account: { cardType: string, cardNumber: string }) => ({
                     label: `${account.cardType} (${account.cardNumber})`,
-                    value: account.cardNumber
+                    value: { cardType: account.cardType, cardNumber: account.cardNumber }
                 }));
                 setAccountTypes(accountData);
             } catch (error) {
                 console.error('Error fetching account types:', error);
             }
         };
+        
 
         if (user && user.email) {
             fetchAccountTypes();
@@ -57,15 +65,17 @@ const Paybill = (props: any) => {
 
 
     const handleAddCard = () => {
-        console.log(value)
-        console.log(value1)
-        console.log(pin)
-        console.log(amount)
-
-
-
-
+        console.log(value);
+        if (value1 && typeof value1 === 'object') {
+            console.log(value1.cardType);
+            console.log(value1.cardNumber);
+        }
+        console.log(pin);
+        console.log(amount);
+        console.log(user.email);
+        console.log(user.password);
     };
+    
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -108,14 +118,16 @@ const Paybill = (props: any) => {
     labelField="label"
     valueField="value"
     placeholder={!isFocus1 ? 'Account' : '...'}
-    value={value1}
+    value={value1 ? { label: `${value1.cardType} (${value1.cardNumber})`, value: value1 } : null}
     onFocus={() => setIsFocus1(true)}
     onBlur={() => setIsFocus1(false)}
-    onChange={(item: { label: string, value: string }) => {
+    onChange={(item: { label: string, value: { cardType: string, cardNumber: string } }) => {
         setValue1(item.value);
         setIsFocus1(false);
     }}
 />
+
+
 
 
 
