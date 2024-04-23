@@ -128,9 +128,29 @@ const AllTransaction = async (req: Request, res: Response) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+const AllAmount = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.query;
+
+        if (!email) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+
+        const accounts = await AddCard.find({  email: email  });
+
+        const totalAmount = accounts.reduce((total, account) => parseInt(String(total)) + parseInt(account.ammount), 0);
+
+        return res.status(200).json({ totalAmount: totalAmount });
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 
 
 
 
-export { Signup, Login,AddCards,AllAccount,AllTransaction };
+
+
+export { Signup, Login,AddCards,AllAccount,AllTransaction,AllAmount };
