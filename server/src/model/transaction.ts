@@ -2,15 +2,21 @@ import mongoose, { Document, Model, Schema } from 'mongoose';
 
 interface TransactionDocument extends Document {
     transactionType: string;
+    transactionName: string;
     cardType: string;
     ammount: string;
     email: string;
     cardNumber: string;
+
     
 }
 
 const transactionSchema = new Schema<TransactionDocument>({
     transactionType: {
+        type: String,
+        required: true
+    },
+    transactionName: {
         type: String,
         required: true
     },

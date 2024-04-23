@@ -99,20 +99,37 @@ const AllAccount = async (req: Request, res: Response) => {
 };
 const AllTransaction = async (req: Request, res: Response) => {
     try {
-        const { email,cardNumber, cardType, ammount} = req.body;
+        const { transactionType, transactionName, email, cardNumber, cardType, ammount } = req.body;
 
-        if (!email || !cardNumber || !cardType || !ammount) {
+        if (!transactionType || !transactionName || !email || !cardNumber || !cardType || !ammount) {
             return res.status(400).json({ error: 'All fields are required' });
         }
-        const newCard = new AddCard({ cardNumber, cardType, ammount, email });
-        await newCard.save();
 
-        return res.status(201).json({ message: 'Card Add successfully' });
+        const account = await AddCard.findOne({ email, cardType });
+        
+        if (!account) {
+            return res.status(404).json({ error: 'Account not found' });
+        }
+
+        if (parseInt(account.ammount) < parseInt(ammount)) {
+            return res.status(400).json({ error: 'Insufficient balance' });
+        }
+        const newBalance = parseInt(account.ammount) - parseInt(ammount);
+        await AddCard.findOneAndUpdate({ email, cardType ,cardNumber}, { $set: { ammount: newBalance } });
+
+
+
+        const newTransaction = new Transaction({ transactionType, transactionName, cardNumber, cardType, ammount, email });
+        await newTransaction.save();
+
+        return res.status(201).json({ message: 'Transaction successful' });
     } catch (error) {
-        console.error('Error in Add Card:', error);
+        console.error('Error in Transaction:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+
 
 
 
