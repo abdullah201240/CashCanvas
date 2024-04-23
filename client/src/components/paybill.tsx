@@ -1,6 +1,9 @@
-import { ScrollView, StyleSheet, Text, View,Image, TouchableOpacity, TextInput } from 'react-native'
-import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native'
+import React, { useState, useEffect } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
+import axios from 'axios';
+
+import { API_BASE_URL } from './config';
 const data = [
     { label: 'Electricity', value: 'Electricity' },
     { label: 'Gas', value: 'Gas' },
@@ -9,16 +12,54 @@ const data = [
     { label: 'Telephone', value: 'Telephone' },
     { label: 'TV', value: 'TV' },
 
-    
-];
-const Paybill = () => {
-    const [isFocus, setIsFocus] = useState(false);
-    const [value, setValue] = useState<string | null>(null); 
-    const [amount, setAmount] = useState('');
 
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-        <View style={[styles.navbar, { backgroundColor: 'green' }]}>
+];
+const Paybill = (props: any) => {
+    const { user } = props.route.params;
+
+    const [isFocus, setIsFocus] = useState(false);
+    const [value, setValue] = useState<string | null>(null);
+    const [amount, setAmount] = useState('');
+    const [pin, setPin] = useState('');
+    const [isFocus1, setIsFocus1] = useState(false);
+    const [value1, setValue1] = useState<string | null>(null);
+    const [accountTypes, setAccountTypes] = useState([]);
+    useEffect(() => {
+        const fetchAccountTypes = async () => {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/AllAccount`, {
+                    params: {
+                        email: user.email,
+                    },
+                });
+    
+                console.log(response.data.accounts.map((account: { cardType: string }) => account.cardType));
+                
+                if (!response.data.accounts.length) {
+                    throw new Error('No account types found');
+                }
+                
+                const cardTypes = response.data.accounts.map((account: { cardType: string }) => account.cardType);
+                setAccountTypes(cardTypes);
+            } catch (error) {
+                console.error('Error fetching account types:', error);
+            }
+        };
+    
+        if (user && user.email) {
+            fetchAccountTypes();
+        }
+    }, [user]);
+    
+    
+
+
+    const handleAddCard = () => {
+    };
+
+    return (
+        <ScrollView contentContainerStyle={styles.container}>
+            <View style={[styles.navbar, { backgroundColor: 'green' }]}>
                 <View style={styles.leftNavbar}>
                     <Text style={{ color: 'white', fontSize: 50, paddingTop: 20 }}>Pay Bill</Text>
                 </View>
@@ -28,7 +69,7 @@ const Paybill = () => {
             </View>
 
             <View style={styles.contentContainer}>
-            <Dropdown
+                <Dropdown
                     style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
                     data={data}
                     labelField="label"
@@ -48,29 +89,28 @@ const Paybill = () => {
                     value={amount}
                     onChangeText={setAmount}
                 />
-                 
 
 
-                <Dropdown
-                    style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-                    data={data}
-                    labelField="label"
-                    valueField="value"
-                    placeholder={!isFocus ? 'Account Type' : '...'}
-                    value={value}
-                    onFocus={() => setIsFocus(true)}
-                    onBlur={() => setIsFocus(false)}
-                    onChange={(item) => {
-                        setValue(item.value);
-                        setIsFocus(false);
-                    }}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Amount"
-                    value={amount}
-                    onChangeText={setAmount}
-                />
+
+<Dropdown
+    style={[styles.dropdown, isFocus1 && { borderColor: 'blue' }]}
+    data={accountTypes.map((type, index) => ({ label: type, value: index.toString() }))}
+    labelField="label"
+    valueField="value"
+    placeholder={!isFocus1 ? 'Account' : '...'}
+    value={value1}
+    onFocus={() => setIsFocus1(true)}
+    onBlur={() => setIsFocus1(false)}
+    onChange={(item: { label: string, value: string }) => {
+        setValue1(item.value);
+        setIsFocus1(false);
+    }}
+/>
+
+
+
+
+
                 <TextInput
                     style={styles.input}
                     placeholder="PIN"
@@ -79,38 +119,38 @@ const Paybill = () => {
                     onChangeText={setPin}
                 />
                 <TouchableOpacity style={styles.buttonContainer} onPress={handleAddCard}>
-                    <Text style={styles.buttonText}>Add</Text>
+                    <Text style={styles.buttonText}>Pay Bill</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.futerContainer}>
-        <View style={styles.futerRow}>
-          <View style={styles.futer}>
+                <View style={styles.futerRow}>
+                    <View style={styles.futer}>
 
-            <Image style={styles.logo} source={require("../../assets/home.png")} />
-            <Text>Home</Text>
-          </View>
-          <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/history.png")} />
-            <Text>History</Text>
-          </View>
-          <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/saving.png")} />
-            <Text>Saving</Text>
-          </View>
-          <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/schedule.png")} />
-            <Text>Schedule</Text>
-          </View>
-          <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/notifications.png")} />
-            <Text>Inbox</Text>
-          </View>
-        </View>
-      </View>
+                        <Image style={styles.logo} source={require("../../assets/home.png")} />
+                        <Text>Home</Text>
+                    </View>
+                    <View style={styles.option}>
+                        <Image style={styles.logo} source={require("../../assets/history.png")} />
+                        <Text>History</Text>
+                    </View>
+                    <View style={styles.option}>
+                        <Image style={styles.logo} source={require("../../assets/saving.png")} />
+                        <Text>Saving</Text>
+                    </View>
+                    <View style={styles.option}>
+                        <Image style={styles.logo} source={require("../../assets/schedule.png")} />
+                        <Text>Schedule</Text>
+                    </View>
+                    <View style={styles.option}>
+                        <Image style={styles.logo} source={require("../../assets/notifications.png")} />
+                        <Text>Inbox</Text>
+                    </View>
+                </View>
+            </View>
 
-   
-    </ScrollView>
-  )
+
+        </ScrollView>
+    )
 }
 
 export default Paybill
@@ -127,10 +167,12 @@ const styles = StyleSheet.create({
     },
     leftNavbar: {
         flexDirection: 'row',
+        marginLeft: 90,
+
     },
     rightNavbar: {
         flexDirection: 'row',
-        marginLeft: 50,
+        marginLeft: 80,
         marginTop: 29,
     },
     contentContainer: {
@@ -182,25 +224,25 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 10,
         backgroundColor: '#fff',
-    
-      },
-      futerRow: {
+
+    },
+    futerRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-end',
         flex: 1,
-    
-      },
-      futer: {
+
+    },
+    futer: {
         alignItems: 'center',
         flex: 1,
         marginHorizontal: 10,
         paddingVertical: 20,
-      },
-      option: {
+    },
+    option: {
         alignItems: 'center',
         flex: 1,
         marginHorizontal: 5,
         paddingVertical: 20,
-      },
+    },
 });

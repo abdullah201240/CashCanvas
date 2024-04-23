@@ -81,7 +81,7 @@ const AddCards = async (req: Request, res: Response) => {
 };
 const AllAccount = async (req: Request, res: Response) => {
     try {
-        const { email } = req.body;
+        const { email } = req.query;
         console.log(email);
 
         if (!email) {
