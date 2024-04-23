@@ -1,7 +1,7 @@
-import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
-import axios from 'axios';
+import axios ,{ AxiosError }from 'axios';
 
 import { API_BASE_URL } from './config';
 const data = [
@@ -64,7 +64,55 @@ const Paybill = (props: any) => {
 
 
 
-    const handleAddCard = () => {
+    const handleAddCard = async () => {
+        if (user.password === pin) {
+            
+
+            try {
+
+                const response = await axios.post(`${API_BASE_URL}/AllTransaction`, {
+                    transactionType:"PayBill",
+                    transactionName:value,
+                    email: user.email,
+                    cardNumber: value1?.cardNumber,
+                    cardType: value1?.cardType,
+                    ammount:amount
+                    
+                     
+                });
+                console.log(response.status)
+
+                if (response.status === 201) {
+                    Alert.alert('Success', 'Transaction successful');
+                    props.navigation.navigate('Home', { user });
+                }
+                else {
+                    Alert.alert('Error', 'Insufficient balance');
+                }
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    const axiosError: AxiosError = error;
+                    if (axiosError.response?.status === 400) {
+                        Alert.alert('Error', 'Insufficient balance');
+                    } else {
+                        Alert.alert('Error', 'Transaction failed. Please try again later.');
+                    }
+                  } else {
+                    Alert.alert('Error', 'Transaction failed. Please try again later.');
+                }
+
+
+
+
+
+
+
+
+                
+            }
+        } else {
+            Alert.alert('Error', 'Wrong PIN');
+        }
         console.log(value);
         if (value1 && typeof value1 === 'object') {
             console.log(value1.cardType);
