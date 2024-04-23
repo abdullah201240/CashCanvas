@@ -1,7 +1,6 @@
-import { StyleSheet, Text, View, Image, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { LineChart } from "react-native-chart-kit";
-
 const Home = (props: any) => {
   const { user } = props.route.params;
 
@@ -10,14 +9,14 @@ const Home = (props: any) => {
 
       <View style={[styles.navbar, { backgroundColor: 'green' }]}>
         <View style={styles.leftNavbar}>
-        {user.photo === "photo" ? (
+          {user.photo === "photo" ? (
             <Image style={styles.logo} source={require("../../assets/user.png")} />
           ) : (
             <Image style={styles.logo} source={require("../../assets/logo.png")} />
           )}
           <View style={styles.nameAndAmount}>
-            <Text style={{ fontSize: 20,color:"white" }}>{user.name}</Text>
-            <Text style={{ fontSize: 50,color:"white" }}>500 tk</Text>
+            <Text style={{ fontSize: 20, color: "white" }}>{user.name}</Text>
+            <Text style={{ fontSize: 50, color: "white" }}>500 tk</Text>
           </View>
 
 
@@ -30,17 +29,22 @@ const Home = (props: any) => {
       <View style={styles.optionsContainer}>
         <View style={styles.optionsRow}>
           <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/addmoney.webp")} />
-            <Text>Add Card</Text>
+            <TouchableOpacity onPress={() => props.navigation.navigate('AddCard', { user })}>
+              <Image style={styles.logo} source={require("../../assets/addmoney.webp")} />
+              <Text>Add Card</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.option}>
             <Image style={styles.logo} source={require("../../assets/sentMoney.png")} />
             <Text>Sent Money</Text>
           </View>
           <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/pyment.jpeg")} />
+            <TouchableOpacity onPress={() => props.navigation.navigate('MakePayment', { user })}>
+            <Image style={[styles.logo, { marginLeft: 22 }]} source={require("../../assets/pyment.png")} />
             <Text>Make Payment</Text>
+            </TouchableOpacity>
           </View>
+      
         </View>
         <View style={styles.optionsRow}>
           <View style={styles.option}>
@@ -48,13 +52,16 @@ const Home = (props: any) => {
             <Text>Received Money</Text>
           </View>
           <View style={styles.option}>
+            <TouchableOpacity onPress={() => props.navigation.navigate('Paybill', { user })}>
             <Image style={styles.logo} source={require("../../assets/paybill.png")} />
             <Text>Pay Bill</Text>
+            </TouchableOpacity>
           </View>
+         
         </View>
       </View>
       <View style={styles.chart}>
-        <Text style={{fontSize:20,fontWeight:"bold"}}>Expense Chart</Text>
+        <Text style={{ fontSize: 20, fontWeight: "bold" }}>Expense Chart</Text>
         <LineChart
           data={{
             labels: ["January", "February", "March", "April", "May", "June"],
@@ -71,11 +78,11 @@ const Home = (props: any) => {
               }
             ]
           }}
-          width={Dimensions.get("window").width} 
+          width={Dimensions.get("window").width}
           height={220}
           yAxisLabel="$"
           yAxisSuffix="k"
-          yAxisInterval={1} 
+          yAxisInterval={1}
           chartConfig={{
             backgroundColor: "#e26a00",
             backgroundGradientFrom: "#fb8c00",
@@ -99,14 +106,16 @@ const Home = (props: any) => {
           }}
         />
       </View>
+
       <View style={styles.futerContainer}>
         <View style={styles.futerRow}>
           <View style={styles.futer}>
+
             <Image style={styles.logo} source={require("../../assets/home.png")} />
             <Text>Home</Text>
           </View>
           <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/history.jpeg")} />
+            <Image style={styles.logo} source={require("../../assets/history.png")} />
             <Text>History</Text>
           </View>
           <View style={styles.option}>
@@ -122,12 +131,10 @@ const Home = (props: any) => {
             <Text>Inbox</Text>
           </View>
         </View>
-        </View>        
+      </View>
 
 
 
-
-      
 
     </ScrollView>
   );
@@ -161,7 +168,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     paddingHorizontal: 20,
     paddingVertical: 20,
-    backgroundColor: '#fff', 
+    backgroundColor: '#fff',
   },
   optionsRow: {
     flexDirection: 'row',
@@ -169,8 +176,8 @@ const styles = StyleSheet.create({
   },
   option: {
     alignItems: 'center',
-    flex: 1, 
-    marginHorizontal: 5, 
+    flex: 1,
+    marginHorizontal: 5,
     paddingVertical: 20,
   },
   chart: {
@@ -185,19 +192,27 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   futerContainer: {
+    flex: 1,
     flexDirection: 'column',
     paddingHorizontal: 10,
     paddingVertical: 10,
-    backgroundColor: '#fff', 
+    backgroundColor: '#fff',
+
   },
   futerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    flex: 1,
+
   },
   futer: {
     alignItems: 'center',
-    flex: 1, 
-    marginHorizontal: 10, 
+    flex: 1,
+    marginHorizontal: 10,
     paddingVertical: 20,
   },
+
+
+
 });
