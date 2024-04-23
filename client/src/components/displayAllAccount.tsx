@@ -51,7 +51,7 @@ const DisplayAllAccount = (props: any) => {
                     onPress: async () => {
                         try {
                             await axios.delete(`${API_BASE_URL}/deleteAccount`, {
-                                data: {
+                                params: {
                                     cardNumber,
                                     cardType,
                                     email: user.email,
