@@ -26,6 +26,7 @@ const AddCard = (props:any) => {
             
 
             try {
+
                 const response = await axios.post(`${API_BASE_URL}/AddCards`, {
                     email: user.email,
                     cardNumber:cardNumber,
@@ -56,7 +57,7 @@ const AddCard = (props:any) => {
         <ScrollView contentContainerStyle={styles.container}>
             <View style={[styles.navbar, { backgroundColor: 'green' }]}>
                 <View style={styles.leftNavbar}>
-                    <Text style={{ color: 'white', fontSize: 50, paddingTop: 20 }}>Add Card</Text>
+                    <Text style={{ color: 'white', fontSize: 50, paddingTop: 20 }}>Add Account</Text>
                 </View>
                 <View style={styles.rightNavbar}>
                     <Image style={styles.logo} source={require('../../assets/logo1.png')} />
@@ -77,7 +78,7 @@ const AddCard = (props:any) => {
                     data={data}
                     labelField="label"
                     valueField="value"
-                    placeholder={!isFocus ? 'Select item' : '...'}
+                    placeholder={!isFocus ? 'Account Type' : '...'}
                     value={value}
                     onFocus={() => setIsFocus(true)}
                     onBlur={() => setIsFocus(false)}
@@ -103,6 +104,33 @@ const AddCard = (props:any) => {
                     <Text style={styles.buttonText}>Add</Text>
                 </TouchableOpacity>
             </View>
+            <View style={styles.futerContainer}>
+        <View style={styles.futerRow}>
+          <View style={styles.futer}>
+
+            <Image style={styles.logo} source={require("../../assets/home.png")} />
+            <Text>Home</Text>
+          </View>
+          <View style={styles.option}>
+            <Image style={styles.logo} source={require("../../assets/history.png")} />
+            <Text>History</Text>
+          </View>
+          <View style={styles.option}>
+            <Image style={styles.logo} source={require("../../assets/saving.png")} />
+            <Text>Saving</Text>
+          </View>
+          <View style={styles.option}>
+            <Image style={styles.logo} source={require("../../assets/schedule.png")} />
+            <Text>Schedule</Text>
+          </View>
+          <View style={styles.option}>
+            <Image style={styles.logo} source={require("../../assets/notifications.png")} />
+            <Text>Inbox</Text>
+          </View>
+        </View>
+      </View>
+
+
         </ScrollView>
     );
 };
@@ -121,12 +149,11 @@ const styles = StyleSheet.create({
     },
     leftNavbar: {
         flexDirection: 'row',
-        marginLeft: 50,
     },
     rightNavbar: {
         flexDirection: 'row',
-        marginLeft: 60,
-        marginTop: 20,
+        marginLeft: 50,
+        marginTop: 29,
     },
     contentContainer: {
         alignItems: 'center',
@@ -171,4 +198,31 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         width: 350,
     },
+    futerContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        backgroundColor: '#fff',
+    
+      },
+      futerRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+        flex: 1,
+    
+      },
+      futer: {
+        alignItems: 'center',
+        flex: 1,
+        marginHorizontal: 10,
+        paddingVertical: 20,
+      },
+      option: {
+        alignItems: 'center',
+        flex: 1,
+        marginHorizontal: 5,
+        paddingVertical: 20,
+      },
 });
