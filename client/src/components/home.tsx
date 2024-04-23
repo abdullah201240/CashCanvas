@@ -4,35 +4,43 @@ import axios from 'axios';
 
 import { API_BASE_URL } from './config';
 import { LineChart } from "react-native-chart-kit";
+import { useFocusEffect } from '@react-navigation/native';
 const Home = (props: any) => {
   const { user } = props.route.params;
   const [amount, setAmount] = useState('');
+  const totalemount = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/AllAmount`, {
+        params: {
+          email: user.email,
+        },
+      });
+
+      if (!response) {
+        throw new Error('No account types found');
+      }
+
+      setAmount(response.data.totalAmount);
+    } catch (error) {
+      console.error('Error fetching account types:', error);
+    }
+  };
 
   useEffect(() => {
-    const totalemount = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/AllAmount`, {
-          params: {
-            email: user.email,
-          },
-        });
-
-        if (!response) {
-          throw new Error('No account types found');
-        }
-
-        setAmount(response.data.totalAmount);
-      } catch (error) {
-        console.error('Error fetching account types:', error);
-      }
-    };
+    
     if (user && user.email) {
       totalemount();
     }
   }, [user]);
+  useFocusEffect(
+    React.useCallback(() => {
+      totalemount();
+    }, [])
+  );
 
   return (
     <ScrollView style={styles.container}>
+
 
       <View style={[styles.navbar, { backgroundColor: 'green' }]}>
         <View style={styles.leftNavbar}>

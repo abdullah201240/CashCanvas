@@ -6,6 +6,7 @@ import { API_BASE_URL } from './config';
 const DisplayAllAccount = (props: any) => {
     const { user } = props.route.params;
 
+
     interface AccountType {
         cardType: string;
         cardNumber: string;
@@ -38,6 +39,7 @@ const DisplayAllAccount = (props: any) => {
         }
     }, [user]);
     const handleDelete = async (cardNumber: string, cardType: string) => {
+
         Alert.alert(
             'Confirm Deletion',
             `Are you sure you want to delete ${cardType} account ending in ${cardNumber.slice(-4)}?`, 
@@ -62,7 +64,19 @@ const DisplayAllAccount = (props: any) => {
                                 prevAccountTypes.filter(account => account.cardNumber !== cardNumber)
                             );
 
-                            Alert.alert('Success!', 'Account deleted successfully.'); 
+                            Alert.alert('Success!', 'Account deleted successfully.');
+                            const response = await axios.get(`${API_BASE_URL}/AllAccount`, {
+                                params: {
+                                    email: user.email,
+                                },
+                            });
+    
+                            if (!response.data.accounts.length) {
+                                throw new Error('No account types found');
+                            }
+    
+                            setAccountTypes(response.data.accounts);
+ 
                         } catch (error) {
                             if (axios.isAxiosError(error)) {
                                 const axiosError: AxiosError = error;
@@ -76,6 +90,7 @@ const DisplayAllAccount = (props: any) => {
                             }
             
                         }
+                        
                     },
                 },
             ]
@@ -85,6 +100,7 @@ const DisplayAllAccount = (props: any) => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
+
             <View style={[styles.navbar, { backgroundColor: 'green' }]}>
                 <View style={styles.leftNavbar}>
                     <Text style={{ color: 'white', fontSize: 50, paddingTop: 20 }}>All Account </Text>
