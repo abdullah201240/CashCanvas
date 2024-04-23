@@ -79,5 +79,24 @@ const AddCards = async (req: Request, res: Response) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+const AllAccount = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+        console.log(email);
 
-export { Signup, Login,AddCards };
+        if (!email) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+
+        const accounts = await AddCard.find({  email: email  });
+
+        return res.status(200).json({ accounts });
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+
+export { Signup, Login,AddCards,AllAccount };
