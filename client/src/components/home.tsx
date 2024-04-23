@@ -40,11 +40,11 @@ const Home = (props: any) => {
           </View>
           <View style={styles.option}>
             <TouchableOpacity onPress={() => props.navigation.navigate('MakePayment', { user })}>
-            <Image style={[styles.logo, { marginLeft: 22 }]} source={require("../../assets/pyment.png")} />
-            <Text>Make Payment</Text>
+              <Image style={[styles.logo, { marginLeft: 22 }]} source={require("../../assets/pyment.png")} />
+              <Text>Make Payment</Text>
             </TouchableOpacity>
           </View>
-      
+
         </View>
         <View style={styles.optionsRow}>
           <View style={styles.option}>
@@ -53,11 +53,11 @@ const Home = (props: any) => {
           </View>
           <View style={styles.option}>
             <TouchableOpacity onPress={() => props.navigation.navigate('Paybill', { user })}>
-            <Image style={styles.logo} source={require("../../assets/paybill.png")} />
-            <Text>Pay Bill</Text>
+              <Image style={styles.logo} source={require("../../assets/paybill.png")} />
+              <Text>Pay Bill</Text>
             </TouchableOpacity>
           </View>
-         
+
         </View>
       </View>
       <View style={styles.chart}>
@@ -110,9 +110,10 @@ const Home = (props: any) => {
       <View style={styles.futerContainer}>
         <View style={styles.futerRow}>
           <View style={styles.futer}>
-
-            <Image style={styles.logo} source={require("../../assets/home.png")} />
-            <Text>Home</Text>
+            <TouchableOpacity onPress={() => props.navigation.navigate('Home', { user })}>
+              <Image style={styles.logo} source={require("../../assets/home.png")} />
+              <Text>Home</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.option}>
             <Image style={styles.logo} source={require("../../assets/history.png")} />
