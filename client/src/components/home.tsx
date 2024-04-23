@@ -44,7 +44,7 @@ const Home = (props: any) => {
 
           <View style={styles.nameAndAmount}>
             <Text style={{ fontSize: 20, color: "white" }}>{user.name}</Text>
-            <TouchableOpacity style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.buttonContainer} onPress={() => props.navigation.navigate('DisplayAllAccount', { user })}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={styles.buttonText}>{amount}</Text>
                 <Image
