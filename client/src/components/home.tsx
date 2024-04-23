@@ -39,9 +39,12 @@ const Home = (props: any) => {
             <Text>Sent Money</Text>
           </View>
           <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/pyment.jpeg")} />
+            <TouchableOpacity onPress={() => props.navigation.navigate('MakePayment', { user })}>
+            <Image style={[styles.logo, { marginLeft: 22 }]} source={require("../../assets/pyment.png")} />
             <Text>Make Payment</Text>
+            </TouchableOpacity>
           </View>
+      
         </View>
         <View style={styles.optionsRow}>
           <View style={styles.option}>
