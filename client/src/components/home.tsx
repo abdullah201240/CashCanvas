@@ -1,8 +1,35 @@
 import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+import { API_BASE_URL } from './config';
 import { LineChart } from "react-native-chart-kit";
 const Home = (props: any) => {
   const { user } = props.route.params;
+  const [amount, setAmount] = useState('');
+
+  useEffect(() => {
+    const totalemount = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/AllAmount`, {
+          params: {
+            email: user.email,
+          },
+        });
+
+        if (!response) {
+          throw new Error('No account types found');
+        }
+
+        setAmount(response.data.totalAmount);
+      } catch (error) {
+        console.error('Error fetching account types:', error);
+      }
+    };
+    if (user && user.email) {
+      totalemount();
+    }
+  }, [user]);
 
   return (
     <ScrollView style={styles.container}>
@@ -10,13 +37,22 @@ const Home = (props: any) => {
       <View style={[styles.navbar, { backgroundColor: 'green' }]}>
         <View style={styles.leftNavbar}>
           {user.photo === "photo" ? (
-            <Image style={styles.logo} source={require("../../assets/user.png")} />
+            <Image style={[styles.logo, styles.roundedImage]} source={require("../../assets/user.png")} />
           ) : (
-            <Image style={styles.logo} source={require("../../assets/logo.png")} />
+            <Image style={[styles.logo, styles.roundedImage]} source={require("../../assets/logo.png")} />
           )}
+
           <View style={styles.nameAndAmount}>
             <Text style={{ fontSize: 20, color: "white" }}>{user.name}</Text>
-            <Text style={{ fontSize: 50, color: "white" }}>500 tk</Text>
+            <TouchableOpacity style={styles.buttonContainer}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={styles.buttonText}>{amount}</Text>
+                <Image
+                  style={{ width: 25, height: 25, resizeMode: 'contain', marginLeft: 5 }}
+                  source={require("../../assets/5784811.png")}
+                />
+              </View>
+            </TouchableOpacity>
           </View>
 
 
@@ -154,7 +190,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 60,
-    fontSize: 80
+    fontSize: 80,
+    height: 150
   },
   leftNavbar: {
     flexDirection: 'row',
@@ -213,7 +250,22 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     paddingVertical: 20,
   },
+  buttonText: {
+    color: "green",
+    fontSize: 18,
+  },
+  buttonContainer: {
+    height: 40,
+    width: 150,
+    backgroundColor: "white",
+    borderRadius: 80,
+    justifyContent: "center",
+    alignItems: "center",
 
+  },
+  roundedImage: {
+    borderRadius: 50,
+  },
 
 
 });
