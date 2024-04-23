@@ -3,6 +3,7 @@ import{Request,Response} from "express";
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import AddCard from "../model/addCard";
+import Transaction from "../model/transaction";
 const defaultSecretKey = crypto.randomBytes(32).toString('hex');
 
 import bcrypt from 'bcrypt';
@@ -79,5 +80,57 @@ const AddCards = async (req: Request, res: Response) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+const AllAccount = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.query;
+        console.log(email);
 
-export { Signup, Login,AddCards };
+        if (!email) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+
+        const accounts = await AddCard.find({  email: email  });
+
+        return res.status(200).json({ accounts });
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+const AllTransaction = async (req: Request, res: Response) => {
+    try {
+        const { transactionType, transactionName, email, cardNumber, cardType, ammount } = req.body;
+
+        if (!transactionType || !transactionName || !email || !cardNumber || !cardType || !ammount) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
+        const account = await AddCard.findOne({ email, cardType });
+        
+        if (!account) {
+            return res.status(404).json({ error: 'Account not found' });
+        }
+
+        if (parseInt(account.ammount) < parseInt(ammount)) {
+            return res.status(400).json({ error: 'Insufficient balance' });
+        }
+        const newBalance = parseInt(account.ammount) - parseInt(ammount);
+        await AddCard.findOneAndUpdate({ email, cardType ,cardNumber}, { $set: { ammount: newBalance } });
+
+
+
+        const newTransaction = new Transaction({ transactionType, transactionName, cardNumber, cardType, ammount, email });
+        await newTransaction.save();
+
+        return res.status(201).json({ message: 'Transaction successful' });
+    } catch (error) {
+        console.error('Error in Transaction:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+
+
+
+export { Signup, Login,AddCards,AllAccount,AllTransaction };

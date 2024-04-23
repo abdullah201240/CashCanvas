@@ -49,9 +49,12 @@ const Home = (props: any) => {
             <Text>Received Money</Text>
           </View>
           <View style={styles.option}>
+            <TouchableOpacity onPress={() => props.navigation.navigate('Paybill', { user })}>
             <Image style={styles.logo} source={require("../../assets/paybill.png")} />
             <Text>Pay Bill</Text>
+            </TouchableOpacity>
           </View>
+         
         </View>
       </View>
       <View style={styles.chart}>
