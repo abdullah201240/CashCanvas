@@ -165,22 +165,23 @@ const AllCost = async (req: Request, res: Response) => {
         const { email } = req.query;
         const transactions = await Transaction.find({ email });
 
-        const simplifiedTransactions = transactions.map(transaction => {
-            return {
-                day: transaction._id.getTimestamp().toISOString().split('T')[0], 
-                amount: transaction.ammount 
-            };
+        const dailyTransactions = {};
+
+        transactions.forEach(transaction => {
+            const date = transaction._id.getTimestamp().toISOString().split('T')[0];
+            if (!dailyTransactions[date]) {
+                dailyTransactions[date] = 0;
+            }
+            dailyTransactions[date] += parseFloat(transaction.ammount);
         });
 
-        if (transactions.length > 0) {
-            return res.status(200).json({ transactions: simplifiedTransactions });
-        } else {
-            return res.status(404).json({ message: 'Transaction not found' });
-        }
+        return res.status(200).json({ dailyTransactions });
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+
 
 
 
