@@ -21,7 +21,6 @@ const History = (props: any) => {
                         email: user.email,
                     },
                 });
-                console.log(response.data.transactions);
 
                 if (!response.data.transactions) {
                     throw new Error('No account types found');
