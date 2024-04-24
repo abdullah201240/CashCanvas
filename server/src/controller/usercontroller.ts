@@ -160,6 +160,26 @@ const DeleteAccount = async (req: Request, res: Response) => {
     }
 }
 
+const AllCost = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.query;
+        const transactions = await Transaction.find({ email });
+
+        const dailyTransactions = {};
+
+        transactions.forEach(transaction => {
+            const date = transaction._id.getTimestamp().toISOString().split('T')[0];
+            if (!dailyTransactions[date]) {
+                dailyTransactions[date] = 0;
+            }
+            dailyTransactions[date] += parseFloat(transaction.ammount);
+        });
+
+        return res.status(200).json({ dailyTransactions });
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
 
 
 
@@ -167,4 +187,8 @@ const DeleteAccount = async (req: Request, res: Response) => {
 
 
 
-export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount ,DeleteAccount};
+
+
+
+
+export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount ,DeleteAccount,AllCost};

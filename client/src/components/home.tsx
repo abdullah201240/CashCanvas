@@ -8,6 +8,8 @@ import { useFocusEffect } from '@react-navigation/native';
 const Home = (props: any) => {
   const { user } = props.route.params;
   const [amount, setAmount] = useState('');
+  const [dailyTransactions, setDailyTransactions] = useState({});
+
   const totalemount = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/AllAmount`, {
@@ -25,16 +27,33 @@ const Home = (props: any) => {
       console.error('Error fetching account types:', error);
     }
   };
+  const fetchDailyTransactions = async () => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/AllCost`, {
+            params: {
+                email: user.email,
+            },
+        });
+
+        setDailyTransactions(response.data.dailyTransactions || {});
+    } catch (error) {
+        console.error('Error fetching daily transactions:', error);
+    }
+};
 
   useEffect(() => {
     
     if (user && user.email) {
       totalemount();
+      fetchDailyTransactions();
+
     }
   }, [user]);
   useFocusEffect(
     React.useCallback(() => {
       totalemount();
+                  fetchDailyTransactions();
+
     }, [])
   );
 
@@ -108,30 +127,24 @@ const Home = (props: any) => {
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>Expense Chart</Text>
         <LineChart
           data={{
-            labels: ["January", "February", "March", "April", "May", "June"],
+            labels: Object.keys(dailyTransactions),
             datasets: [
               {
-                data: [
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100
-                ]
-              }
-            ]
+                  data: Object.values(dailyTransactions),
+              },
+          ],
+            
           }}
           width={Dimensions.get("window").width}
           height={220}
-          yAxisLabel="$"
-          yAxisSuffix="k"
+          yAxisLabel=""
+          yAxisSuffix=""
           yAxisInterval={1}
           chartConfig={{
             backgroundColor: "#e26a00",
             backgroundGradientFrom: "#fb8c00",
             backgroundGradientTo: "#ffa726",
-            decimalPlaces: 2,
+            decimalPlaces: 1,
             color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             style: {
