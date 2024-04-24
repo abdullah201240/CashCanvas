@@ -1,9 +1,45 @@
 import { ScrollView, StyleSheet, Text, View, Image } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios';
+import { API_BASE_URL } from './config';
 
-const History = () => {
+const History = (props: any) => {
+    const { user } = props.route.params;
+    interface HistoryType {
+        transactionType: string;
+        transactionName: string;
+        cardNumber: string;
+        cardType: string;
+        ammount: string;
+    }
+    const [historyTypes, setHistoryTypes] = useState<HistoryType[]>([]);
+    useEffect(() => {
+        const fetchAccountTypes = async () => {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/History`, {
+                    params: {
+                        email: user.email,
+                    },
+                });
+                console.log(response.data.transactions);
+
+                if (!response.data.transactions) {
+                    throw new Error('No account types found');
+                }
+
+                setHistoryTypes(response.data.transactions);
+            } catch (error) {
+                console.error('Error fetching account types:', error);
+            }
+        };
+
+        if (user && user.email) {
+            fetchAccountTypes();
+        }
+    }, [user]);
+
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.container}>
 
 
             <View style={[styles.navbar, { backgroundColor: 'green' }]}>
@@ -17,16 +53,20 @@ const History = () => {
 
 
 
-            <View style={styles.cardContainer}>
-                {accountTypes.map((account, index) => (
+            <ScrollView style={styles.cardContainer}>
+                {historyTypes.map((history, index) => (
                     <View key={index} style={styles.card}>
-                        <Text style={styles.cardTitle}>{account.cardType}</Text>
-                        <Text>Card Number: {account.cardNumber}</Text>
-                        <Text>Amount: {account.ammount}</Text>
+                        <Text style={styles.cardTitle}>{history.transactionType}</Text>
+                        <Text>Transaction Name: {history.transactionName}</Text>
+                        
+                     <Text>Card Number: {history.cardNumber}</Text>
+                    <Text>Card Type: {history.cardType}</Text>
+
+                        <Text>Amount: {history.ammount}</Text>
                         
                     </View>
                 ))}
-            </View>
+            </ScrollView>
 
 
             <View style={styles.futerContainer}>
@@ -54,7 +94,7 @@ const History = () => {
                 </View>
             </View>
 
-        </ScrollView>
+        </View>
     )
 }
 
@@ -72,13 +112,13 @@ const styles = StyleSheet.create({
     },
     leftNavbar: {
         flexDirection: 'row',
-        marginLeft: 20,
+        marginLeft: 80,
 
 
     },
     rightNavbar: {
         flexDirection: 'row',
-        marginLeft: 50,
+        marginLeft: 80,
         marginTop: 29,
     },
     contentContainer: {
@@ -93,11 +133,20 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     futerContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        paddingHorizontal: 10,
-        paddingVertical: 10,
+       
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
         backgroundColor: '#fff',
+        borderTopColor: '#ccc',
+        paddingHorizontal: 10,
+
+        
+
     },
     futerRow: {
         flexDirection: 'row',
@@ -109,13 +158,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flex: 1,
         marginHorizontal: 10,
-        paddingVertical: 20,
+        paddingVertical: 15,
     },
     option: {
         alignItems: 'center',
         flex: 1,
         marginHorizontal: 5,
-        paddingVertical: 20,
+        paddingVertical: 16,
     },
     cardContainer: {
         marginHorizontal: 20,
