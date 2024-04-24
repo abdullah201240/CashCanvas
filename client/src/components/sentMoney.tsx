@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     },
     leftNavbar: {
         flexDirection: 'row',
-        marginLeft: 80,
+        marginLeft: 20,
 
 
     },

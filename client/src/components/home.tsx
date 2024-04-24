@@ -29,20 +29,20 @@ const Home = (props: any) => {
   };
   const fetchDailyTransactions = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/AllCost`, {
-            params: {
-                email: user.email,
-            },
-        });
+      const response = await axios.get(`${API_BASE_URL}/AllCost`, {
+        params: {
+          email: user.email,
+        },
+      });
 
-        setDailyTransactions(response.data.dailyTransactions || {});
+      setDailyTransactions(response.data.dailyTransactions || {});
     } catch (error) {
-        console.error('Error fetching daily transactions:', error);
+      console.error('Error fetching daily transactions:', error);
     }
-};
+  };
 
   useEffect(() => {
-    
+
     if (user && user.email) {
       totalemount();
       fetchDailyTransactions();
@@ -52,7 +52,7 @@ const Home = (props: any) => {
   useFocusEffect(
     React.useCallback(() => {
       totalemount();
-                  fetchDailyTransactions();
+      fetchDailyTransactions();
 
     }, [])
   );
@@ -93,13 +93,17 @@ const Home = (props: any) => {
         <View style={styles.optionsRow}>
           <View style={styles.option}>
             <TouchableOpacity onPress={() => props.navigation.navigate('AddCard', { user })}>
-              <Image style={styles.logo} source={require("../../assets/addmoney.webp")} />
+              <Image style={[styles.logo, { marginLeft: 12 }]} source={require("../../assets/addmoney.webp")} />
               <Text>Add Card</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/sentMoney.png")} />
-            <Text>Sent Money</Text>
+            <TouchableOpacity onPress={() => props.navigation.navigate('SentMoney', { user })}>
+              <Image style={[styles.logo, { marginLeft: 16 }]} source={require("../../assets/sentMoney.png")} />
+              <Text>Sent Money</Text>
+            </TouchableOpacity>
+
+
           </View>
           <View style={styles.option}>
             <TouchableOpacity onPress={() => props.navigation.navigate('MakePayment', { user })}>
@@ -130,10 +134,10 @@ const Home = (props: any) => {
             labels: Object.keys(dailyTransactions),
             datasets: [
               {
-                  data: Object.values(dailyTransactions),
+                data: Object.values(dailyTransactions),
               },
-          ],
-            
+            ],
+
           }}
           width={Dimensions.get("window").width}
           height={220}
@@ -168,16 +172,16 @@ const Home = (props: any) => {
         <View style={styles.futerRow}>
           <View style={styles.futer}>
             <TouchableOpacity onPress={() => props.navigation.navigate('Home', { user })}>
-              <Image style={styles.logo } source={require("../../assets/home.png")} />
+              <Image style={styles.logo} source={require("../../assets/home.png")} />
               <Text>Home</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.option}>
-          <TouchableOpacity onPress={() => props.navigation.navigate('History', { user })}>
-          <Image style={styles.logo} source={require("../../assets/history.png")} />
-            <Text>History</Text>
+            <TouchableOpacity onPress={() => props.navigation.navigate('History', { user })}>
+              <Image style={styles.logo} source={require("../../assets/history.png")} />
+              <Text>History</Text>
             </TouchableOpacity>
-            
+
           </View>
           <View style={styles.option}>
             <Image style={styles.logo} source={require("../../assets/saving.png")} />
