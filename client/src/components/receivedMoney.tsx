@@ -16,7 +16,7 @@ const ReceivedMoney = (props: any) => {
     useEffect(() => {
         const fetchAccountTypes = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}/History`, {
+                const response = await axios.get(`${API_BASE_URL}/RecivedMoney`, {
                     params: {
                         email: user.email,
                     },
@@ -38,7 +38,7 @@ const ReceivedMoney = (props: any) => {
     }, [user]);
     
     const handleAddMoney = async () => {
-        
+
 
     }
 
@@ -46,7 +46,7 @@ const ReceivedMoney = (props: any) => {
         <View style={styles.container}>
             <View style={[styles.navbar, { backgroundColor: 'green' }]}>
                 <View style={styles.leftNavbar}>
-                    <Text style={{ color: 'white', fontSize: 50, paddingTop: 20 }}>History </Text>
+                    <Text style={{ color: 'white', fontSize: 40, paddingTop: 20 }}>Received Money </Text>
                 </View>
                 <View style={styles.rightNavbar}>
                     <Image style={styles.logo} source={require('../../assets/logo1.png')} />
@@ -56,9 +56,9 @@ const ReceivedMoney = (props: any) => {
             <ScrollView style={styles.cardContainer}>
                 {historyTypes.map((history, index) => (
                     <View key={index} style={styles.card}>
-                        <Text style={styles.cardTitle}>{history.transactionType}</Text>
+                        <Text style={styles.cardTitle}>Money received</Text>
                         <Text>Transaction Name: {history.transactionName}</Text>
-                        <Text>Card Number: {history.cardNumber}</Text>
+                        <Text>Received Number: {history.cardNumber}</Text>
                         <Text>Card Type: {history.cardType}</Text>
                         <Text>Amount: {history.ammount}</Text>
                         <TouchableOpacity style={styles.deleteButton} onPress={() => handleAddMoney()}>
@@ -107,15 +107,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingHorizontal: 20,
         paddingTop: 60,
-        fontSize: 80,
+        fontSize: 30,
     },
     leftNavbar: {
         flexDirection: 'row',
-        marginLeft: 80,
+        marginLeft: 30,
     },
     rightNavbar: {
         flexDirection: 'row',
-        marginLeft: 80,
+        marginLeft: 5,
         marginTop: 29,
     },
     logo: {
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     deleteButton: {
-        backgroundColor: 'red',
+        backgroundColor: 'green',
         padding: 10,
         borderRadius: 5,
         marginTop: 10,
