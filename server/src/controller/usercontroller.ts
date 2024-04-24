@@ -198,7 +198,7 @@ const AllCost = async (req: Request, res: Response) => {
 const History = async (req: Request, res: Response) => {
     try {
         const { email } = req.query;
-        const transactions = await Transaction.find({ email });
+        const transactions = await Transaction.find({ email }).sort({ createdAt: -1 });
 
 
 
