@@ -208,6 +208,18 @@ const History = async (req: Request, res: Response) => {
     }
 }
 
+const RecivedMoney = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.query;
+        const transactions = await Transaction.find({ email ,transactionType: 'Sent money'}).sort({ createdAt: -1 });
+
+
+
+        return res.status(200).json({ transactions });
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
 
 
 
@@ -219,4 +231,4 @@ const History = async (req: Request, res: Response) => {
 
 
 
-export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount, DeleteAccount, AllCost, History };
+export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount, DeleteAccount, AllCost, History , RecivedMoney};
