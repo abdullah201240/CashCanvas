@@ -10,6 +10,7 @@ import AddCard from './src/components/addCard';
 import Paybill from './src/components/paybill';
 import MakePayment from './src/components/makePayment';
 import DisplayAllAccount from './src/components/displayAllAccount';
+import History from './src/components/history';
 const Stack = createStackNavigator();
 
 
@@ -26,6 +27,7 @@ export default function App() {
         <Stack.Screen name="Paybill" component={Paybill} options={{ headerShown: false }}  />
         <Stack.Screen name="MakePayment" component={MakePayment} options={{ headerShown: false }}  />
         <Stack.Screen name="DisplayAllAccount" component={DisplayAllAccount} options={{ headerShown: false }}  />
+        <Stack.Screen name="History" component={History} options={{ headerShown: false }}  />
 
       </Stack.Navigator>
     </NavigationContainer>

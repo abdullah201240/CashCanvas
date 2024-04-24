@@ -173,8 +173,11 @@ const Home = (props: any) => {
             </TouchableOpacity>
           </View>
           <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/history.png")} />
+          <TouchableOpacity onPress={() => props.navigation.navigate('History', { user })}>
+          <Image style={styles.logo} source={require("../../assets/history.png")} />
             <Text>History</Text>
+            </TouchableOpacity>
+            
           </View>
           <View style={styles.option}>
             <Image style={styles.logo} source={require("../../assets/saving.png")} />
