@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View, Image } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { API_BASE_URL } from './config';
@@ -39,8 +39,6 @@ const History = (props: any) => {
 
     return (
         <View style={styles.container}>
-
-
             <View style={[styles.navbar, { backgroundColor: 'green' }]}>
                 <View style={styles.leftNavbar}>
                     <Text style={{ color: 'white', fontSize: 50, paddingTop: 20 }}>History </Text>
@@ -50,46 +48,40 @@ const History = (props: any) => {
                 </View>
             </View>
 
-
-
             <ScrollView style={styles.cardContainer}>
                 {historyTypes.map((history, index) => (
                     <View key={index} style={styles.card}>
                         <Text style={styles.cardTitle}>{history.transactionType}</Text>
                         <Text>Transaction Name: {history.transactionName}</Text>
-                        
-                     <Text>Card Number: {history.cardNumber}</Text>
-                    <Text>Card Type: {history.cardType}</Text>
-
+                        <Text>Card Number: {history.cardNumber}</Text>
+                        <Text>Card Type: {history.cardType}</Text>
                         <Text>Amount: {history.ammount}</Text>
-                        
                     </View>
                 ))}
             </ScrollView>
 
-
-            <View style={styles.futerContainer}>
-                <View style={styles.futerRow}>
-                    <View style={styles.futer}>
+            <View style={styles.footer}>
+                <View style={styles.footerRow}>
+                    <TouchableOpacity style={styles.footerOption}>
                         <Image style={styles.logo} source={require("../../assets/home.png")} />
                         <Text>Home</Text>
-                    </View>
-                    <View style={styles.option}>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.footerOption}>
                         <Image style={styles.logo} source={require("../../assets/history.png")} />
                         <Text>History</Text>
-                    </View>
-                    <View style={styles.option}>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.footerOption}>
                         <Image style={styles.logo} source={require("../../assets/saving.png")} />
                         <Text>Saving</Text>
-                    </View>
-                    <View style={styles.option}>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.footerOption}>
                         <Image style={styles.logo} source={require("../../assets/schedule.png")} />
                         <Text>Schedule</Text>
-                    </View>
-                    <View style={styles.option}>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.footerOption}>
                         <Image style={styles.logo} source={require("../../assets/notifications.png")} />
                         <Text>Inbox</Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -101,7 +93,7 @@ export default History
 
 const styles = StyleSheet.create({
     container: {
-        flexGrow: 1,
+        flex: 1,
     },
     navbar: {
         flexDirection: 'row',
@@ -112,27 +104,18 @@ const styles = StyleSheet.create({
     leftNavbar: {
         flexDirection: 'row',
         marginLeft: 80,
-
-
     },
     rightNavbar: {
         flexDirection: 'row',
         marginLeft: 80,
         marginTop: 29,
     },
-    contentContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: 120,
-        backgroundColor: 'white',
-    },
     logo: {
         width: 50,
         height: 50,
         resizeMode: 'contain',
     },
-    futerContainer: {
-       
+    footer: {
         position: 'absolute',
         bottom: 0,
         left: 0,
@@ -143,31 +126,24 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderTopColor: '#ccc',
         paddingHorizontal: 10,
-
-        
-
     },
-    futerRow: {
+    footerRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-end',
         flex: 1,
     },
-    futer: {
-        alignItems: 'center',
-        flex: 1,
-        marginHorizontal: 10,
-        paddingVertical: 15,
-    },
-    option: {
+    footerOption: {
         alignItems: 'center',
         flex: 1,
         marginHorizontal: 5,
         paddingVertical: 16,
     },
     cardContainer: {
+        flex: 1,
         marginHorizontal: 20,
         marginTop: 20,
+        marginBottom: 70, // Adjusted to make space for the footer
     },
     card: {
         backgroundColor: 'white',
@@ -188,5 +164,4 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10,
     },
-
 })

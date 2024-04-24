@@ -7,6 +7,7 @@ import Transaction from "../model/transaction";
 const defaultSecretKey = crypto.randomBytes(32).toString('hex');
 
 import bcrypt from 'bcrypt';
+import mongoose from "mongoose";
 const Signup = async (req: Request, res: Response) => {
     try {
         const { name, phone, email, password, address, nid } = req.body;
@@ -105,6 +106,14 @@ const AllTransaction = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'All fields are required' });
         }
 
+        if (transactionType === 'Sent money') {
+            const user = await User.findOne({ phone: transactionName });
+
+            if (!user) {
+                return res.status(404).json({ error: 'User Not Found' });
+            }
+        }
+
         const account = await AddCard.findOne({ email, cardType });
 
         if (!account) {
@@ -114,17 +123,22 @@ const AllTransaction = async (req: Request, res: Response) => {
         if (parseInt(account.ammount) < parseInt(ammount)) {
             return res.status(400).json({ error: 'Insufficient balance' });
         }
+
         const newBalance = parseInt(account.ammount) - parseInt(ammount);
         await AddCard.findOneAndUpdate({ email, cardType, cardNumber }, { $set: { ammount: newBalance } });
-
-
 
         const newTransaction = new Transaction({ transactionType, transactionName, cardNumber, cardType, ammount, email });
         await newTransaction.save();
 
         return res.status(201).json({ message: 'Transaction successful' });
+
     } catch (error) {
         console.error('Error in Transaction:', error);
+
+        if (error instanceof mongoose.Error.CastError) {
+            return res.status(400).json({ error: 'Invalid data type provided' });
+        }
+
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -184,9 +198,9 @@ const AllCost = async (req: Request, res: Response) => {
 const History = async (req: Request, res: Response) => {
     try {
         const { email } = req.query;
-        const transactions = await Transaction.find({ email });
+        const transactions = await Transaction.find({ email }).sort({ createdAt: -1 });
 
-        
+
 
         return res.status(200).json({ transactions });
     } catch (error) {
@@ -205,4 +219,4 @@ const History = async (req: Request, res: Response) => {
 
 
 
-export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount ,DeleteAccount,AllCost,History};
+export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount, DeleteAccount, AllCost, History };
