@@ -66,9 +66,11 @@ const SentMoney = (props: any) => {
                 console.log(response.status)
 
                 if (response.status === 201) {
-                    Alert.alert('Success', 'Payment successful');
+                    Alert.alert('Success', 'Sent Money successful');
                     props.navigation.navigate('Home', { user });
                 }
+                
+                
                 else {
                     Alert.alert('Error', 'Insufficient balance');
                 }
@@ -77,7 +79,12 @@ const SentMoney = (props: any) => {
                     const axiosError: AxiosError = error;
                     if (axiosError.response?.status === 400) {
                         Alert.alert('Error', 'Insufficient balance');
-                    } else {
+                    }
+                    else if(axiosError.response?.status === 404){
+                        Alert.alert('Error', 'User Not Found');
+    
+                    }
+                     else {
                         Alert.alert('Error', 'Payment failed. Please try again later.');
                     }
                   } else {
