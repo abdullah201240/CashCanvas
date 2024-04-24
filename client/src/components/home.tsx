@@ -168,7 +168,7 @@ const Home = (props: any) => {
         <View style={styles.futerRow}>
           <View style={styles.futer}>
             <TouchableOpacity onPress={() => props.navigation.navigate('Home', { user })}>
-              <Image style={styles.logo} source={require("../../assets/home.png")} />
+              <Image style={styles.logo } source={require("../../assets/home.png")} />
               <Text>Home</Text>
             </TouchableOpacity>
           </View>
