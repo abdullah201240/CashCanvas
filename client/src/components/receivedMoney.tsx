@@ -31,7 +31,7 @@ const ReceivedMoney = (props: any) => {
             try {
                 const response = await axios.get(`${API_BASE_URL}/RecivedMoney`, {
                     params: {
-                        email: user.email,
+                        transactionName: user.phone,
                     },
                 });
 
@@ -73,7 +73,7 @@ const ReceivedMoney = (props: any) => {
     }, [user]);
     
 
-    const handleAddMoney = async (amount: string,) => {
+    const handleAddMoney = async (amount: string,rcardNumber: string ,rcardType: string) => {
         if (user.password === pin) {
             
 
@@ -85,7 +85,9 @@ const ReceivedMoney = (props: any) => {
                     email: user.email,
                     cardNumber: value1?.cardNumber,
                     cardType: value1?.cardType,
-                    ammount:amount
+                    ammount:amount,
+                    rcardNumber:rcardNumber,
+                    rcardType: rcardType
                     
                      
                 });
@@ -138,7 +140,6 @@ const ReceivedMoney = (props: any) => {
                 {historyTypes.map((history, index) => (
                     <View key={index} style={styles.card}>
                         <Text style={styles.cardTitle}>Money received</Text>
-                        <Text>Transaction Name: {history.transactionName}</Text>
                         <Text>Received Number: {history.cardNumber}</Text>
                         <Text>Card Type: {history.cardType}</Text>
                         <Text>Amount: {history.ammount}</Text>
@@ -163,7 +164,7 @@ const ReceivedMoney = (props: any) => {
                             value={pin}
                             onChangeText={setPin}
                         />
-                        <TouchableOpacity style={styles.deleteButton} onPress={() => handleAddMoney(history.ammount)}>
+                        <TouchableOpacity style={styles.deleteButton} onPress={() => handleAddMoney(history.ammount,history.cardNumber,history.cardType)}>
                             <Text style={styles.deleteButtonText}>Add Money</Text>
                         </TouchableOpacity>
                     </View>
