@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View,Image, TextInput, TouchableOpacity, Alert } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Dropdown } from 'react-native-element-dropdown';
 import axios, { AxiosError } from 'axios';
@@ -27,11 +27,11 @@ const SentMoney = (props: any) => {
                         email: user.email,
                     },
                 });
-        
+
                 if (!response.data.accounts.length) {
                     throw new Error('No account types found');
                 }
-        
+
                 const accountData: AccountType[] = response.data.accounts.map((account: { cardType: string, cardNumber: string }) => ({
                     label: `${account.cardType} (${account.cardNumber})`,
                     value: { cardType: account.cardType, cardNumber: account.cardNumber }
@@ -41,7 +41,7 @@ const SentMoney = (props: any) => {
                 console.error('Error fetching account types:', error);
             }
         };
-        
+
 
         if (user && user.email) {
             fetchAccountTypes();
@@ -49,19 +49,19 @@ const SentMoney = (props: any) => {
     }, [user]);
     const handleSentMoney = async () => {
         if (user.password === pin) {
-            
+
 
             try {
 
                 const response = await axios.post(`${API_BASE_URL}/AllTransaction`, {
-                    transactionType:"Sent money",
-                    transactionName:number,
+                    transactionType: "Sent money",
+                    transactionName: number,
                     email: user.email,
                     cardNumber: value1?.cardNumber,
                     cardType: value1?.cardType,
-                    ammount:amount
-                    
-                     
+                    ammount: amount
+
+
                 });
                 console.log(response.status)
 
@@ -69,8 +69,8 @@ const SentMoney = (props: any) => {
                     Alert.alert('Success', 'Sent Money successful');
                     props.navigation.navigate('Home', { user });
                 }
-                
-                
+
+
                 else {
                     Alert.alert('Error', 'Insufficient balance');
                 }
@@ -80,14 +80,14 @@ const SentMoney = (props: any) => {
                     if (axiosError.response?.status === 400) {
                         Alert.alert('Error', 'Insufficient balance');
                     }
-                    else if(axiosError.response?.status === 404){
+                    else if (axiosError.response?.status === 404) {
                         Alert.alert('Error', 'User Not Found');
-    
+
                     }
-                     else {
+                    else {
                         Alert.alert('Error', 'Payment failed. Please try again later.');
                     }
-                  } else {
+                } else {
                     Alert.alert('Error', 'Payment failed. Please try again later.');
                 }
 
@@ -98,14 +98,14 @@ const SentMoney = (props: any) => {
 
 
 
-                
+
             }
         } else {
             Alert.alert('Error', 'Wrong PIN');
         }
-       
+
     };
-    
+
 
 
 
@@ -172,18 +172,20 @@ const SentMoney = (props: any) => {
             <View style={styles.futerContainer}>
                 <View style={styles.futerRow}>
                     <View style={styles.futer}>
+                        <TouchableOpacity onPress={() => props.navigation.navigate('Home', { user })}>
+                            <Image style={styles.logo} source={require("../../assets/home.png")} />
+                            <Text>Home</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.option}>
+                        <TouchableOpacity onPress={() => props.navigation.navigate('History', { user })}>
+                            <Image style={styles.logo} source={require("../../assets/history.png")} />
+                            <Text>History</Text>
+                        </TouchableOpacity>
 
-                        <Image style={styles.logo} source={require("../../assets/home.png")} />
-                        <Text>Home</Text>
                     </View>
-                    <View style={styles.option}>
-                        <Image style={styles.logo} source={require("../../assets/history.png")} />
-                        <Text>History</Text>
-                    </View>
-                    <View style={styles.option}>
-                        <Image style={styles.logo} source={require("../../assets/saving.png")} />
-                        <Text>Saving</Text>
-                    </View>
+
+
                     <View style={styles.option}>
                         <Image style={styles.logo} source={require("../../assets/schedule.png")} />
                         <Text>Schedule</Text>

@@ -212,10 +212,7 @@ const Home = (props: any) => {
             </TouchableOpacity>
 
           </View>
-          <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/saving.png")} />
-            <Text>Saving</Text>
-          </View>
+         
           <View style={styles.option}>
             <Image style={styles.logo} source={require("../../assets/schedule.png")} />
             <Text>Schedule</Text>

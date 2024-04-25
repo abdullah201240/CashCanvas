@@ -107,18 +107,19 @@ const AddCard = (props:any) => {
             <View style={styles.futerContainer}>
         <View style={styles.futerRow}>
           <View style={styles.futer}>
+            <TouchableOpacity onPress={() => props.navigation.navigate('Home', { user })}>
+              <Image style={styles.logo} source={require("../../assets/home.png")} />
+              <Text>Home</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.option}>
+            <TouchableOpacity onPress={() => props.navigation.navigate('History', { user })}>
+              <Image style={styles.logo} source={require("../../assets/history.png")} />
+              <Text>History</Text>
+            </TouchableOpacity>
 
-            <Image style={styles.logo} source={require("../../assets/home.png")} />
-            <Text>Home</Text>
           </View>
-          <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/history.png")} />
-            <Text>History</Text>
-          </View>
-          <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/saving.png")} />
-            <Text>Saving</Text>
-          </View>
+         
           <View style={styles.option}>
             <Image style={styles.logo} source={require("../../assets/schedule.png")} />
             <Text>Schedule</Text>
@@ -129,6 +130,8 @@ const AddCard = (props:any) => {
           </View>
         </View>
       </View>
+
+
 
 
         </ScrollView>

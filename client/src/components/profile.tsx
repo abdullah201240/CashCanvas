@@ -220,18 +220,15 @@ const Profile = (props: any) => {
             </View>
 
             <View style={styles.footer}>
-                <TouchableOpacity style={styles.footerItem}>
+                <TouchableOpacity style={styles.footerItem} onPress={() => props.navigation.navigate('Home', { user })}>
                     <Image style={styles.footerIcon} source={require("../../assets/home.png")} />
                     <Text>Home</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.footerItem}>
+                <TouchableOpacity style={styles.footerItem} onPress={() => props.navigation.navigate('History', { user })}>
                     <Image style={styles.footerIcon} source={require("../../assets/history.png")} />
                     <Text>History</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.footerItem}>
-                    <Image style={styles.footerIcon} source={require("../../assets/saving.png")} />
-                    <Text>Saving</Text>
-                </TouchableOpacity>
+                
                 <TouchableOpacity style={styles.footerItem}>
                     <Image style={styles.footerIcon} source={require("../../assets/schedule.png")} />
                     <Text>Schedule</Text>
