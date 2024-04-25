@@ -53,12 +53,12 @@ const Login = async (req: Request, res: Response) => {
         }
         const token = jwt.sign({ userId: user._id }, defaultSecretKey, { expiresIn: '1h' });
 
-        const { name, phone, photo } = user;
+        const { name, phone, photo ,salary,saving } = user;
         return res.status(200).json({
             message: 'Login successful',
             token,
 
-            data: { name, phone, email, photo, password }
+            data: { name, phone, email, photo, password , salary , saving}
         });
     } catch (error) {
         console.error('Error in login:', error);
