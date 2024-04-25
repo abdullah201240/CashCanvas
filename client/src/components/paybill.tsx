@@ -16,7 +16,8 @@ const data = [
 ];
 const Paybill = (props: any) => {
     const { user } = props.route.params;
-
+    const [salary, setSalary] = useState('');
+    const [saving, setSaving] = useState('');
     const [isFocus, setIsFocus] = useState(false);
     const [value, setValue] = useState<string | null>(null);
     const [amount, setAmount] = useState('');
@@ -54,76 +55,124 @@ const Paybill = (props: any) => {
                 console.error('Error fetching account types:', error);
             }
         };
+        const fetchProfile = async () => {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/Profile`, {
+                    params: {
+                        email: user.email,
+                    },
+                });
+
+                if (!response) {
+                    throw new Error('No account types found');
+                }
+
+
+                setSalary(response.data.salary);
+                setSaving(response.data.saving);
+
+            } catch (error) {
+                console.error('Error fetching account types:', error);
+            }
+        };
 
 
         if (user && user.email) {
             fetchAccountTypes();
+            fetchProfile();
+
         }
     }, [user]);
 
-
-
-
     const handleAddCard = async () => {
         if (user.password === pin) {
-
-
             try {
+                const nsaving = parseInt(saving);
+                const nsalary = parseInt(salary);
+    
+                if (!isNaN(nsaving) && !isNaN(nsalary)) {
+                    const newper = nsaving / 100;
+                    const newsalary = nsalary * newper;
+                    const updatesalary = nsalary - newsalary;
+                    const dailyamount = updatesalary / 30;
+                    
+                    const response = await axios.get(`${API_BASE_URL}/RegularCost`, {
+                        params: {
+                            email: user.email,
+                        },
+                    });
+                    const finalcost = parseInt(response.data.totalCost) + parseInt(amount);
 
-                const response = await axios.post(`${API_BASE_URL}/AllTransaction`, {
-                    transactionType: "PayBill",
-                    transactionName: value,
-                    email: user.email,
-                    cardNumber: value1?.cardNumber,
-                    cardType: value1?.cardType,
-                    ammount: amount
 
-
-                });
-                console.log(response.status)
-
-                if (response.status === 201) {
-                    Alert.alert('Success', 'Transaction successful');
-                    props.navigation.navigate('Home', { user });
-                }
-                else {
-                    Alert.alert('Error', 'Insufficient balance');
-                }
-            } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    const axiosError: AxiosError = error;
-                    if (axiosError.response?.status === 400) {
-                        Alert.alert('Error', 'Insufficient balance');
+                    if (finalcost > dailyamount) {
+                        Alert.alert(
+                            'Warning',
+                            'You have exceeded your daily spending limit. Do you still want to send money?',
+                            [
+                                {
+                                    text: 'Cancel',
+                                    style: 'cancel',
+                                },
+                                {
+                                    text: 'Yes',
+                                    onPress: async () => {
+                                        try {
+                                            await payment();
+                                        } catch (error) {
+                                            console.error(error);
+                                            Alert.alert('Error', 'Payment failed. Please try again later.');
+                                        }
+                                    },
+                                },
+                            ]
+                        );
                     } else {
-                        Alert.alert('Error', 'Transaction failed. Please try again later.');
+                        await payment();
                     }
                 } else {
-                    Alert.alert('Error', 'Transaction failed. Please try again later.');
+                    console.error('Saving or salary is not a valid number');
                 }
-
-
-
-
-
-
-
-
-
+            } catch (error) {
+                handlePaymentError(error);
             }
         } else {
             Alert.alert('Error', 'Wrong PIN');
         }
-        console.log(value);
-        if (value1 && typeof value1 === 'object') {
-            console.log(value1.cardType);
-            console.log(value1.cardNumber);
-        }
-        console.log(pin);
-        console.log(amount);
-        console.log(user.email);
-        console.log(user.password);
     };
 
+    const payment = async () => {
+        const response = await axios.post(`${API_BASE_URL}/AllTransaction`, {
+            transactionType: "PayBill",
+            transactionName: value,
+            email: user.email,
+            cardNumber: value1?.cardNumber,
+            cardType: value1?.cardType,
+            ammount: amount
+        });
+        if (response.status === 201) {
+            Alert.alert('Success', 'Pay Bill successful');
+            props.navigation.navigate('Home', { user });
+        } else {
+            Alert.alert('Error', 'Insufficient balance');
+        }
+    }
+    const handlePaymentError = (error: unknown) => {
+        if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError;
+            if (axiosError.response?.status === 400) {
+                Alert.alert('Error', 'Insufficient balance');
+            } else if (axiosError.response?.status === 404) {
+                Alert.alert('Error', 'User Not Found');
+            } else {
+                Alert.alert('Error', 'Pay Bill failed. Please try again later.');
+            }
+        } else if (error instanceof Error) {
+            Alert.alert('Error', 'Pay Bill failed. Please try again later.');
+        } else {
+            Alert.alert('Error', 'An unknown error occurred. Please try again later.');
+        }
+    };
+    
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
