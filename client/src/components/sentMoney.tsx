@@ -11,6 +11,8 @@ const SentMoney = (props: any) => {
     const [pin, setPin] = useState('');
     const [isFocus1, setIsFocus1] = useState(false);
     const [value1, setValue1] = useState<{ cardType: string; cardNumber: string } | null>(null);
+    const [salary, setSalary] = useState('');
+    const [saving, setSaving] = useState('');
     interface AccountType {
         label: string;
         value: {
@@ -32,6 +34,7 @@ const SentMoney = (props: any) => {
                     throw new Error('No account types found');
                 }
 
+
                 const accountData: AccountType[] = response.data.accounts.map((account: { cardType: string, cardNumber: string }) => ({
                     label: `${account.cardType} (${account.cardNumber})`,
                     value: { cardType: account.cardType, cardNumber: account.cardNumber }
@@ -42,13 +45,56 @@ const SentMoney = (props: any) => {
             }
         };
 
+        const fetchProfile = async () => {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/Profile`, {
+                    params: {
+                        email: user.email,
+                    },
+                });
+                console.log(response.data);
+
+                if (!response) {
+                    throw new Error('No account types found');
+                }
+
+
+                setSalary(response.data.salary);
+                setSaving(response.data.saving);
+
+            } catch (error) {
+                console.error('Error fetching account types:', error);
+            }
+        };
+
 
         if (user && user.email) {
             fetchAccountTypes();
+            fetchProfile();
         }
     }, [user]);
     const handleSentMoney = async () => {
         if (user.password === pin) {
+            
+            const nsaving = parseInt(saving);
+            const nsalary = parseInt(salary);
+
+            if (!isNaN(nsaving) && !isNaN(nsalary)) {
+                const newper = nsaving / 100;
+                const newsalary = nsalary * newper;
+                const updatesalary = nsalary - newsalary;
+                const dailyamount=updatesalary/30
+                console.log(updatesalary);
+                console.log(dailyamount);
+
+
+            } else {
+                console.error('Saving or salary is not a valid number');
+            }
+
+
+
+
 
 
             try {
@@ -63,8 +109,6 @@ const SentMoney = (props: any) => {
 
 
                 });
-                console.log(response.status)
-
                 if (response.status === 201) {
                     Alert.alert('Success', 'Sent Money successful');
                     props.navigation.navigate('Home', { user });

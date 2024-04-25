@@ -331,6 +331,34 @@ const UpdateProfile = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+const RegularCost = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.query;
+        const today = new Date();
+        const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+
+        const transactions = await Transaction.find({
+            email,
+            transactionType: { $in: ["Sent money", "PayBill", "Payment"] },
+            createdAt: { $gte: startOfToday, $lt: endOfToday }
+        });
+
+        const dailyTransactions = {};
+
+        transactions.forEach(transaction => {
+            const date = transaction._id.getTimestamp().toISOString().split('T')[0];
+            if (!dailyTransactions[date]) {
+                dailyTransactions[date] = 0;
+            }
+            dailyTransactions[date] += parseFloat(transaction.ammount);
+        });
+
+        return res.status(200).json({ dailyTransactions });
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
 
 
@@ -342,4 +370,4 @@ const UpdateProfile = async (req: Request, res: Response) => {
 
 
 
-export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount, DeleteAccount, AllCost, History, RecivedMoney, MoneyADD, UpdateProfileImage,Profile,UpdateProfile };
+export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount, DeleteAccount, AllCost, History, RecivedMoney, MoneyADD, UpdateProfileImage,Profile,UpdateProfile ,RegularCost};

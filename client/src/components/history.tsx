@@ -159,6 +159,6 @@ const styles = StyleSheet.create({
     cardTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 50,
+        marginBottom: 10,
     },
 })
