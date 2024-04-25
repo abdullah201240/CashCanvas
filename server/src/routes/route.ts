@@ -23,7 +23,7 @@ router.get('/AllCost', AllCost);
 router.get('/History', History);
 
 router.get('/RecivedMoney', RecivedMoney);
-router.get('/MoneyADD', MoneyADD);
+router.post('/MoneyADD', MoneyADD);
 
 
 

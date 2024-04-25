@@ -79,7 +79,7 @@ const ReceivedMoney = (props: any) => {
 
             try {
 
-                const response = await axios.post(`${API_BASE_URL}/AllTransaction`, {
+                const response = await axios.post(`${API_BASE_URL}/MoneyADD`, {
                     transactionType:"Add Money",
                     transactionName:value1?.cardNumber,
                     email: user.email,
@@ -95,14 +95,12 @@ const ReceivedMoney = (props: any) => {
                     Alert.alert('Success', 'Money add successful');
                     props.navigation.navigate('Home', { user });
                 }
-                else {
-                    Alert.alert('Error', 'Insufficient balance');
-                }
+                
             } catch (error) {
                 if (axios.isAxiosError(error)) {
                     const axiosError: AxiosError = error;
                     if (axiosError.response?.status === 400) {
-                        Alert.alert('Error', 'Insufficient balance');
+                        Alert.alert('Error', 'All fields are required');
                     } else {
                         Alert.alert('Error', 'Money add failed. Please try again later.');
                     }
