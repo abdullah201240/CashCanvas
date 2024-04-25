@@ -8,6 +8,8 @@ interface UserDocument extends Document {
     address: string;
     nid: string;
     photo: string;
+    salary: string;
+    saving: string;
 }
 
 const userSchema = new Schema<UserDocument>({
@@ -38,6 +40,14 @@ const userSchema = new Schema<UserDocument>({
     photo: {
         type: String,
         default: "photo"
+    },
+    salary: {
+        type: String,
+        default: " "
+    },
+    saving: {
+        type: String,
+        default: " "
     }
 }, { timestamps: true });
 
