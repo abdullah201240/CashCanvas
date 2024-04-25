@@ -124,26 +124,34 @@ const DisplayAllAccount = (props: any) => {
             </View>
 
             <View style={styles.futerContainer}>
-                <View style={styles.futerRow}>
-                    <View style={styles.futer}>
-                        <Image style={styles.logo} source={require("../../assets/home.png")} />
-                        <Text>Home</Text>
-                    </View>
-                    <View style={styles.option}>
-                        <Image style={styles.logo} source={require("../../assets/history.png")} />
-                        <Text>History</Text>
-                    </View>
-                    
-                    <View style={styles.option}>
-                        <Image style={styles.logo} source={require("../../assets/schedule.png")} />
-                        <Text>Schedule</Text>
-                    </View>
-                    <View style={styles.option}>
-                        <Image style={styles.logo} source={require("../../assets/notifications.png")} />
-                        <Text>Inbox</Text>
-                    </View>
-                </View>
-            </View>
+        <View style={styles.futerRow}>
+          <View style={styles.futer}>
+            <TouchableOpacity onPress={() => props.navigation.navigate('Home', { user })}>
+              <Image style={styles.logo} source={require("../../assets/home.png")} />
+              <Text>Home</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.option}>
+            <TouchableOpacity onPress={() => props.navigation.navigate('History', { user })}>
+              <Image style={styles.logo} source={require("../../assets/history.png")} />
+              <Text>History</Text>
+            </TouchableOpacity>
+
+          </View>
+         
+          <View style={styles.option}>
+            <Image style={styles.logo} source={require("../../assets/schedule.png")} />
+            <Text>Schedule</Text>
+          </View>
+          <View style={styles.option}>
+            <Image style={styles.logo} source={require("../../assets/notifications.png")} />
+            <Text>Inbox</Text>
+          </View>
+        </View>
+      </View>
+
+
+
         </ScrollView>
     )
 }

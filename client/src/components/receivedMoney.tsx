@@ -173,11 +173,11 @@ const ReceivedMoney = (props: any) => {
 
             <View style={styles.footer}>
                 <View style={styles.footerRow}>
-                    <TouchableOpacity style={styles.footerOption}>
+                    <TouchableOpacity style={styles.footerOption} onPress={() => props.navigation.navigate('Home', { user })}>
                         <Image style={styles.logo} source={require("../../assets/home.png")} />
                         <Text>Home</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.footerOption}>
+                    <TouchableOpacity style={styles.footerOption} onPress={() => props.navigation.navigate('History', { user })}>
                         <Image style={styles.logo} source={require("../../assets/history.png")} />
                         <Text>History</Text>
                     </TouchableOpacity>
