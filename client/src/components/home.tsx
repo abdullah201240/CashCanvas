@@ -65,9 +65,9 @@ const Home = (props: any) => {
         <View style={styles.leftNavbar}>
           <TouchableOpacity onPress={() => props.navigation.navigate('Profile', { user })}>
           {user.photo === "photo" ? (
-            <Image style={[styles.logo, styles.roundedImage]} source={require("../../assets/user.png")} />
+            <Image style={[ styles.roundedImage]} source={require("../../assets/user.png")} />
           ) : (
-            <Image style={[styles.logo, styles.roundedImage]} source={require("../../assets/logo.png")} />
+            <Image style={[ styles.roundedImage]} source={{ uri: `${API_BASE_URL}/${user.photo}` }} />
           )}
           </TouchableOpacity>
 
@@ -298,7 +298,12 @@ const styles = StyleSheet.create({
 
   },
   roundedImage: {
-    borderRadius: 50,
+    width: 50,
+    height: 50,
+    resizeMode: 'cover',
+    borderRadius: 100, 
+    marginBottom: 10,
+    marginTop: 30,
   },
 
 
