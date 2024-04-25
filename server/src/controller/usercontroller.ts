@@ -185,7 +185,7 @@ const DeleteAccount = async (req: Request, res: Response) => {
 const AllCost = async (req: Request, res: Response) => {
     try {
         const { email } = req.query;
-        const transactions = await Transaction.find({ email });
+        const transactions = await Transaction.find({ email, transactionType: { $in: ["Sent money", "PayBill", "Payment"] } });
 
         const dailyTransactions = {};
 
