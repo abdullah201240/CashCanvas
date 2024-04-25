@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
@@ -7,17 +7,13 @@ import { API_BASE_URL } from './config';
 const Profile = (props: any) => {
     const { user } = props.route.params;
 
-    const apiUrl = `${API_BASE_URL}/UpdateProfileImage`;
+    const apiUrl =`${API_BASE_URL}/UpateProfileImage`;
     const [image, setImage] = useState('');
     const [profile, setProfile] = useState<Profile | null>(null);
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
     const [salary, setSalary] = useState('');
     const [saving, setSaving] = useState('');
-
-
-
-
 
     interface Profile {
         name: string;
@@ -27,6 +23,7 @@ const Profile = (props: any) => {
         nid: string;
         photo: string;
     }
+
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -44,11 +41,8 @@ const Profile = (props: any) => {
                 setProfile(response.data);
                 setName(response.data.name);
                 setAddress(response.data.address);
-                
                 setSalary(response.data.salary);
                 setSaving(response.data.saving);
-
-
             } catch (error) {
                 console.error('Error fetching account types:', error);
             }
@@ -58,7 +52,6 @@ const Profile = (props: any) => {
             fetchProfile();
         }
     }, [user]);
-
 
     const pickSomething = async () => {
         try {
@@ -77,8 +70,8 @@ const Profile = (props: any) => {
                 size: file.size,
             };
             formData.append("email", user.email);
-
             formData.append("photo", imageFile as any);
+
             const axiosConfig = {
                 headers: {
                     Accept: "application/json",
@@ -88,14 +81,22 @@ const Profile = (props: any) => {
             const response = await axios.put(apiUrl, formData, axiosConfig);
 
             setImage(response.data.image);
-
-
-
+            if (response.status === 200) {
+                Alert.alert('Success', 'Profile updated successfully');
+                const response = await axios.get(`${API_BASE_URL}/Profile`, {
+                    params: {
+                        email: user.email,
+                    },
+                });
+                if (!response) {
+                    throw new Error('No account types found');
+                }
+            }
         } catch (error) {
             console.error("Error while selecting file: ", error);
-
         }
     }
+
     const handleNameChange = (text: string) => {
         setName(text);
     };
@@ -103,129 +104,123 @@ const Profile = (props: any) => {
     const handleAddressChange = (text: string) => {
         setAddress(text);
     };
+
     const handleSalaryChange = (text: string) => {
         setSalary(text);
     };
+
     const handleSavingChange = (text: string) => {
         setSaving(text);
     };
 
     const handleUpdateProfile = async () => {
-        console.log(name)
-        console.log(address)
-
-
+        try {
+            const response = await axios.put(`${API_BASE_URL}/UpdateProfile`, {
+                name: name,
+                address: address,
+                email: user.email,
+                salary: salary,
+                saving: saving,
+            });
+            if (response.status === 200) {
+                Alert.alert('Success', 'Profile updated successfully');
+                const response = await axios.get(`${API_BASE_URL}/Profile`, {
+                    params: {
+                        email: user.email,
+                    },
+                });
+                if (!response) {
+                    throw new Error('No account types found');
+                }
+            }
+        } catch (error) {
+            console.error("Error updating profile: ", error);
+        }
     }
 
     return (
         <View style={styles.container}>
-            <View style={[styles.navbar, { backgroundColor: 'green' }]}>
-                <View style={styles.leftNavbar}>
-                    <Text style={{ color: 'white', fontSize: 50, paddingTop: 20 }}>Profile</Text>
-                </View>
-                <View style={styles.rightNavbar}>
-                    <Image style={styles.logo} source={require('../../assets/logo1.png')} />
-                </View>
+            <View style={styles.navbar}>
+                <Text style={styles.headerText}>Profile</Text>
+                <Image style={styles.logo} source={require('../../assets/logo1.png')} />
             </View>
 
-            <View style={styles.contentContainer} >
-                {profile && <Image style={styles.img} source={{ uri: `${API_BASE_URL}/${profile.photo}` }} />}
+            <View style={styles.contentContainer}>
+                {profile && <Image style={styles.img} source={{ uri: `${API_BASE_URL}/${profile.photo}`}} />}
                 <TouchableOpacity style={styles.buttonContainer} onPress={pickSomething}>
                     <Text style={styles.buttonText}>Set Image</Text>
-
-
                 </TouchableOpacity>
-
-
-
-
-
-
-
-            </View>
-            <ScrollView style={styles.contentContainer} >
-                <TextInput
-                    style={styles.input}
-                    placeholder="Name"
-                    value={name}
-                    onChangeText={handleNameChange}
-                />
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Nid"
-                    value={profile?.nid || ""}
-                    editable={false}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Phone"
-                    value={profile?.phone || ""}
-                    editable={false}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    value={profile?.email || ""}
-                    editable={false}
-
-                />
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Address"
-                    value={address}
-                    onChangeText={handleAddressChange}
-                />
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Salary"
-                    value={salary}
-                       
-                    onChangeText={handleSalaryChange}
+                <ScrollView contentContainerStyle={styles.scrollContent}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Name"
+                        value={name}
+                        onChangeText={handleNameChange}
                     />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Saving"
-                    value={saving}
-                    onChangeText={handleSavingChange}
-                />
-                <TouchableOpacity style={styles.buttonContainer} onPress={handleUpdateProfile}>
-                    <Text style={styles.buttonText}>Update</Text>
-                </TouchableOpacity>
-
-            </ScrollView>
-
-            <View style={styles.futerContainer}>
-                <View style={styles.futerRow}>
-                    <View style={styles.futer}>
-
-                        <Image style={styles.logo} source={require("../../assets/home.png")} />
-                        <Text>Home</Text>
-                    </View>
-                    <View style={styles.option}>
-                        <Image style={styles.logo} source={require("../../assets/history.png")} />
-                        <Text>History</Text>
-                    </View>
-                    <View style={styles.option}>
-                        <Image style={styles.logo} source={require("../../assets/saving.png")} />
-                        <Text>Saving</Text>
-                    </View>
-                    <View style={styles.option}>
-                        <Image style={styles.logo} source={require("../../assets/schedule.png")} />
-                        <Text>Schedule</Text>
-                    </View>
-                    <View style={styles.option}>
-                        <Image style={styles.logo} source={require("../../assets/notifications.png")} />
-                        <Text>Inbox</Text>
-                    </View>
-                </View>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Nid"
+                        value={profile?.nid || ""}
+                        editable={false}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Phone"
+                        value={profile?.phone || ""}
+                        editable={false}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email"
+                        value={profile?.email || ""}
+                        editable={false}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Address"
+                        value={address}
+                        onChangeText={handleAddressChange}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Salary"
+                        value={salary}
+                        onChangeText={handleSalaryChange}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Saving"
+                        value={saving}
+                        onChangeText={handleSavingChange}
+                    />
+                    <TouchableOpacity style={styles.buttonContainer} onPress={handleUpdateProfile}>
+                        <Text style={styles.buttonText}>Update</Text>
+                    </TouchableOpacity>
+                </ScrollView>
             </View>
 
-
-
-
+            <View style={styles.footer}>
+                <TouchableOpacity style={styles.footerItem}>
+                    <Image style={styles.footerIcon} source={require("../../assets/home.png")} />
+                    <Text>Home</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.footerItem}>
+                    <Image style={styles.footerIcon} source={require("../../assets/history.png")} />
+                    <Text>History</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.footerItem}>
+                    <Image style={styles.footerIcon} source={require("../../assets/saving.png")} />
+                    <Text>Saving</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.footerItem}>
+                    <Image style={styles.footerIcon} source={require("../../assets/schedule.png")} />
+                    <Text>Schedule</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.footerItem}>
+                    <Image style={styles.footerIcon} source={require("../../assets/notifications.png")} />
+                    <Text>Inbox</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }
@@ -234,27 +229,30 @@ export default Profile
 
 const styles = StyleSheet.create({
     container: {
-        flexGrow: 1,
+        flex: 1,
     },
     navbar: {
         flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         paddingHorizontal: 20,
         paddingTop: 60,
-        fontSize: 80,
+        backgroundColor: 'green',
     },
-    leftNavbar: {
-        flexDirection: 'row',
-        marginLeft: 90,
-    },
-    rightNavbar: {
-        flexDirection: 'row',
-        marginLeft: 100,
-        marginTop: 29,
+    headerText: {
+        color: 'white',
+        fontSize: 24,
     },
     logo: {
         width: 50,
         height: 50,
         resizeMode: 'contain',
+    },
+    contentContainer: {
+        flex: 1,
+        backgroundColor: 'white',
+        paddingHorizontal: 20,
+        paddingTop: 20,
     },
     img: {
         width: 100,
@@ -262,15 +260,10 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         borderRadius: 50,
         marginBottom: 10,
-        marginTop: 30,
+        alignSelf: 'center',
     },
-
-
-
-    contentContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'white',
+    scrollContent: {
+        flexGrow: 1,
     },
     buttonText: {
         color: 'white',
@@ -285,6 +278,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 50,
         marginBottom: 10,
+        alignSelf: 'center',
     },
     input: {
         height: 50,
@@ -293,33 +287,23 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         paddingHorizontal: 10,
         borderRadius: 40,
-        width: 350,
     },
-    futerContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        backgroundColor: '#fff',
-
-    },
-    futerRow: {
+    footer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        flex: 1,
-
-    },
-    futer: {
         alignItems: 'center',
-        flex: 1,
-        marginHorizontal: 10,
-        paddingVertical: 20,
+        backgroundColor: '#fff',
+        borderTopWidth: 1,
+        borderTopColor: '#ccc',
+        paddingHorizontal: 10,
+        paddingVertical: 15,
     },
-    option: {
+    footerItem: {
         alignItems: 'center',
-        flex: 1,
-        marginHorizontal: 5,
-        paddingVertical: 20,
     },
-})
+    footerIcon: {
+        width: 30,
+        height: 30,
+        resizeMode: 'contain',
+    },
+});

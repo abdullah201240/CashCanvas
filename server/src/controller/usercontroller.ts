@@ -307,6 +307,30 @@ const Profile = async (req: Request, res: Response) => {
 
 
 }
+const UpdateProfile = async (req: Request, res: Response) => {
+    try {
+        const { email, name, address, salary, saving } = req.body;
+
+        if (!email || !name || !address || !salary || !saving) {
+            return res.status(400).json({ message: 'Required all fields' });
+        }
+
+        const updatedUser = await User.findOneAndUpdate(
+            { email: email },
+            { name: name, address: address, salary: salary, saving: saving },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'Profile updated successfully', user: updatedUser });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
 
 
@@ -318,4 +342,4 @@ const Profile = async (req: Request, res: Response) => {
 
 
 
-export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount, DeleteAccount, AllCost, History, RecivedMoney, MoneyADD, UpdateProfileImage,Profile };
+export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount, DeleteAccount, AllCost, History, RecivedMoney, MoneyADD, UpdateProfileImage,Profile,UpdateProfile };
