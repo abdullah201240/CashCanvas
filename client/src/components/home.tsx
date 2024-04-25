@@ -63,11 +63,13 @@ const Home = (props: any) => {
 
       <View style={[styles.navbar, { backgroundColor: 'green' }]}>
         <View style={styles.leftNavbar}>
+          <TouchableOpacity onPress={() => props.navigation.navigate('Profile', { user })}>
           {user.photo === "photo" ? (
             <Image style={[styles.logo, styles.roundedImage]} source={require("../../assets/user.png")} />
           ) : (
             <Image style={[styles.logo, styles.roundedImage]} source={require("../../assets/logo.png")} />
           )}
+          </TouchableOpacity>
 
           <View style={styles.nameAndAmount}>
             <Text style={{ fontSize: 20, color: "white" }}>{user.name}</Text>
