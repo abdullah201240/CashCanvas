@@ -228,10 +228,7 @@ const Profile = (props: any) => {
                     <Image style={styles.footerIcon} source={require("../../assets/history.png")} />
                     <Text>History</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.footerItem}>
-                    <Image style={styles.footerIcon} source={require("../../assets/saving.png")} />
-                    <Text>Saving</Text>
-                </TouchableOpacity>
+                
                 <TouchableOpacity style={styles.footerItem}>
                     <Image style={styles.footerIcon} source={require("../../assets/schedule.png")} />
                     <Text>Schedule</Text>

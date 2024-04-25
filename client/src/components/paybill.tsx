@@ -204,10 +204,7 @@ const Paybill = (props: any) => {
                         <Image style={styles.logo} source={require("../../assets/history.png")} />
                         <Text>History</Text>
                     </View>
-                    <View style={styles.option}>
-                        <Image style={styles.logo} source={require("../../assets/saving.png")} />
-                        <Text>Saving</Text>
-                    </View>
+                    
                     <View style={styles.option}>
                         <Image style={styles.logo} source={require("../../assets/schedule.png")} />
                         <Text>Schedule</Text>

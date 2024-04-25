@@ -181,10 +181,7 @@ const ReceivedMoney = (props: any) => {
                         <Image style={styles.logo} source={require("../../assets/history.png")} />
                         <Text>History</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.footerOption}>
-                        <Image style={styles.logo} source={require("../../assets/saving.png")} />
-                        <Text>Saving</Text>
-                    </TouchableOpacity>
+                   
                     <TouchableOpacity style={styles.footerOption}>
                         <Image style={styles.logo} source={require("../../assets/schedule.png")} />
                         <Text>Schedule</Text>
