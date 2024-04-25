@@ -106,14 +106,14 @@ const AllTransaction = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'All fields are required' });
         }
 
-    
 
-        const account = await AddCard.findOne({ email, cardType ,cardNumber });
+
+        const account = await AddCard.findOne({ email, cardType, cardNumber });
 
         if (!account) {
             return res.status(404).json({ error: 'Account not found' });
         }
-        
+
         if (parseInt(account.ammount) < parseInt(ammount)) {
             return res.status(400).json({ error: 'Insufficient balance' });
         }
@@ -125,10 +125,10 @@ const AllTransaction = async (req: Request, res: Response) => {
             }
             const newBalance = parseInt(account.ammount) - parseInt(ammount);
             await AddCard.findOneAndUpdate({ email, cardType, cardNumber }, { $set: { ammount: newBalance } });
-    
-            const newTransaction = new Transaction({ transactionType, transactionName, cardNumber, cardType, ammount, email,status:'Panding' });
+
+            const newTransaction = new Transaction({ transactionType, transactionName, cardNumber, cardType, ammount, email, status: 'Panding' });
             await newTransaction.save();
-    
+
             return res.status(201).json({ message: 'Transaction successful' });
         }
 
@@ -219,7 +219,7 @@ const History = async (req: Request, res: Response) => {
 const RecivedMoney = async (req: Request, res: Response) => {
     try {
         const { transactionName } = req.query;
-        const transactions = await Transaction.find({ transactionName ,transactionType: 'Sent money',status: "Panding"}).sort({ createdAt: -1 });
+        const transactions = await Transaction.find({ transactionName, transactionType: 'Sent money', status: "Panding" }).sort({ createdAt: -1 });
 
 
 
@@ -231,28 +231,80 @@ const RecivedMoney = async (req: Request, res: Response) => {
 const MoneyADD = async (req: Request, res: Response) => {
     try {
 
-        const { transactionType, transactionName, email, cardNumber, cardType, ammount ,rcardNumber,rcardType } = req.body;
+        const { transactionType, transactionName, email, cardNumber, cardType, ammount, rcardNumber, rcardType } = req.body;
         if (!transactionType || !transactionName || !email || !cardNumber || !cardType || !ammount) {
             return res.status(400).json({ error: 'All fields are required' });
         }
-        const account = await AddCard.findOne({ email, cardType ,cardNumber });
+        const account = await AddCard.findOne({ email, cardType, cardNumber });
         const newBalance = parseInt(account.ammount) + parseInt(ammount);
         await AddCard.findOneAndUpdate({ email, cardType, cardNumber }, { $set: { ammount: newBalance } });
 
-        await Transaction.findOneAndUpdate({ transactionType:"Sent money",cardNumber: rcardNumber, cardType:rcardType,ammount}, { $set: { status: "Done" } });
+        await Transaction.findOneAndUpdate({ transactionType: "Sent money", cardNumber: rcardNumber, cardType: rcardType, ammount }, { $set: { status: "Done" } });
 
         const newTransaction = new Transaction({ transactionType, transactionName, cardNumber, cardType, ammount, email });
         await newTransaction.save();
         return res.status(201).json({ message: 'Transaction successful' });
 
-        
+
     } catch (error) {
 
         return res.status(500).json({ message: 'Internal server error' });
 
     }
 
-        
+
+
+}
+const UpdateProfileImage = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+
+        if (!req.file) {
+            return res.status(400).json({ message: 'Image not found' });
+        }
+
+        console.log('File uploaded:', req.file);
+
+        const updatedUser = await User.findOneAndUpdate(
+            { email: email },
+            { photo: req.file.path },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'Profile updated successfully', user: updatedUser });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+const Profile = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.query;
+
+        if (!email) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        res.status(200).json(user);
+
+
+
+
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+
+
+    }
+
+
 
 }
 
@@ -266,4 +318,4 @@ const MoneyADD = async (req: Request, res: Response) => {
 
 
 
-export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount, DeleteAccount, AllCost, History , RecivedMoney ,MoneyADD};
+export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount, DeleteAccount, AllCost, History, RecivedMoney, MoneyADD, UpdateProfileImage,Profile };

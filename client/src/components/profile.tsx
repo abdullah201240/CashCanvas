@@ -1,12 +1,48 @@
 import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
 import { API_BASE_URL } from './config';
 
-const Profile = () => {
-    const apiUrl = `${API_BASE_URL}/upload`;
+const Profile = (props: any) => {
+    const { user } = props.route.params;
+
+    const apiUrl = `${API_BASE_URL}/UpdateProfileImage`;
     const [image, setImage] = useState('');
+    const [profile, setProfile] = useState<Profile | null>(null); // State to hold the fetched profile
+
+    interface Profile {
+        name: string;
+        phone: string;
+        email: string;
+        address: string;
+        nid: string;
+        photo: string;
+    }
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/Profile`, {
+                    params: {
+                        email: user.email,
+                    },
+                });
+                console.log(response.data);
+
+                if (!response) {
+                    throw new Error('No account types found');
+                }
+
+                setProfile(response.data);
+            } catch (error) {
+                console.error('Error fetching account types:', error);
+            }
+        };
+
+        if (user && user.email) {
+            fetchProfile();
+        }
+    }, [user]);
 
 
     const pickSomething = async () => {
@@ -20,19 +56,21 @@ const Profile = () => {
             const file = assets[0];
 
             const imageFile = {
-                name: file.name.split(".")[0],
+                name: file.name,
                 uri: file.uri,
                 type: file.mimeType,
                 size: file.size,
             };
-        formData.append("image", imageFile as any);
+        formData.append("email", user.email);
+
+        formData.append("photo", imageFile as any);
         const axiosConfig = {
                     headers: {
                       Accept: "application/json",
                       "Content-Type": "multipart/form-data",
                     },
                   };
-         const response = await axios.post(apiUrl, formData, axiosConfig);
+         const response = await axios.put(apiUrl, formData, axiosConfig);
 
           setImage(response.data.image);
 
@@ -56,13 +94,15 @@ const Profile = () => {
             </View>
 
             <View style={styles.contentContainer} >
-
-                <Image style={styles.img} source={require('../../assets/user.png')} />
+            {profile && <Image style={styles.img} source={{ uri: `${API_BASE_URL}/${profile.photo}` }} />}
                 <TouchableOpacity style={styles.buttonContainer} onPress={pickSomething}>
                     <Text style={styles.buttonText}>Set Image</Text>
 
 
                 </TouchableOpacity>
+
+                {profile && <Text>Name: {profile.name}</Text>}
+
 
 
 
@@ -102,13 +142,17 @@ const styles = StyleSheet.create({
         height: 50,
         resizeMode: 'contain',
     },
-    img: {
-        width: 50,
-        height: 50,
-        resizeMode: 'contain',
-        borderRadius: 50,
-        paddingBottom: 100,
-    },
+   img: {
+    width: 200,
+    height: 200,
+    resizeMode: 'cover',
+    borderRadius: 100, 
+    marginBottom: 10,
+    marginTop: 30,
+},
+
+    
+    
     contentContainer: {
         alignItems: 'center',
         justifyContent: 'center',
