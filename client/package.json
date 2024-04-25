@@ -17,6 +17,7 @@
     "axios": "^1.6.8",
     "expo": "~50.0.14",
     "expo-contacts": "^12.8.2",
+    "expo-document-picker": "^11.10.1",
     "expo-local-authentication": "^13.8.0",
     "expo-status-bar": "~1.11.1",
     "install": "^0.13.0",

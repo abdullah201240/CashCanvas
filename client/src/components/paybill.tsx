@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
-import axios ,{ AxiosError }from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import { API_BASE_URL } from './config';
 const data = [
@@ -30,7 +30,7 @@ const Paybill = (props: any) => {
             cardNumber: string;
         };
     }
-    
+
     const [accountTypes, setAccountTypes] = useState<AccountType[]>([]);
     useEffect(() => {
         const fetchAccountTypes = async () => {
@@ -40,11 +40,11 @@ const Paybill = (props: any) => {
                         email: user.email,
                     },
                 });
-        
+
                 if (!response.data.accounts.length) {
                     throw new Error('No account types found');
                 }
-        
+
                 const accountData: AccountType[] = response.data.accounts.map((account: { cardType: string, cardNumber: string }) => ({
                     label: `${account.cardType} (${account.cardNumber})`,
                     value: { cardType: account.cardType, cardNumber: account.cardNumber }
@@ -54,7 +54,7 @@ const Paybill = (props: any) => {
                 console.error('Error fetching account types:', error);
             }
         };
-        
+
 
         if (user && user.email) {
             fetchAccountTypes();
@@ -66,19 +66,19 @@ const Paybill = (props: any) => {
 
     const handleAddCard = async () => {
         if (user.password === pin) {
-            
+
 
             try {
 
                 const response = await axios.post(`${API_BASE_URL}/AllTransaction`, {
-                    transactionType:"PayBill",
-                    transactionName:value,
+                    transactionType: "PayBill",
+                    transactionName: value,
                     email: user.email,
                     cardNumber: value1?.cardNumber,
                     cardType: value1?.cardType,
-                    ammount:amount
-                    
-                     
+                    ammount: amount
+
+
                 });
                 console.log(response.status)
 
@@ -97,7 +97,7 @@ const Paybill = (props: any) => {
                     } else {
                         Alert.alert('Error', 'Transaction failed. Please try again later.');
                     }
-                  } else {
+                } else {
                     Alert.alert('Error', 'Transaction failed. Please try again later.');
                 }
 
@@ -108,7 +108,7 @@ const Paybill = (props: any) => {
 
 
 
-                
+
             }
         } else {
             Alert.alert('Error', 'Wrong PIN');
@@ -123,7 +123,7 @@ const Paybill = (props: any) => {
         console.log(user.email);
         console.log(user.password);
     };
-    
+
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -160,20 +160,20 @@ const Paybill = (props: any) => {
 
 
 
-<Dropdown
-    style={[styles.dropdown, isFocus1 && { borderColor: 'blue' }]}
-    data={accountTypes}
-    labelField="label"
-    valueField="value"
-    placeholder={!isFocus1 ? 'Account' : '...'}
-    value={value1 ? { label: `${value1.cardType} (${value1.cardNumber})`, value: value1 } : null}
-    onFocus={() => setIsFocus1(true)}
-    onBlur={() => setIsFocus1(false)}
-    onChange={(item: { label: string, value: { cardType: string, cardNumber: string } }) => {
-        setValue1(item.value);
-        setIsFocus1(false);
-    }}
-/>
+                <Dropdown
+                    style={[styles.dropdown, isFocus1 && { borderColor: 'blue' }]}
+                    data={accountTypes}
+                    labelField="label"
+                    valueField="value"
+                    placeholder={!isFocus1 ? 'Account' : '...'}
+                    value={value1 ? { label: `${value1.cardType} (${value1.cardNumber})`, value: value1 } : null}
+                    onFocus={() => setIsFocus1(true)}
+                    onBlur={() => setIsFocus1(false)}
+                    onChange={(item: { label: string, value: { cardType: string, cardNumber: string } }) => {
+                        setValue1(item.value);
+                        setIsFocus1(false);
+                    }}
+                />
 
 
 

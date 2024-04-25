@@ -136,14 +136,14 @@ const styles = StyleSheet.create({
     footerOption: {
         alignItems: 'center',
         flex: 1,
-        marginHorizontal: 5,
+        marginHorizontal: 15,
         paddingVertical: 16,
     },
     cardContainer: {
         flex: 1,
         marginHorizontal: 20,
         marginTop: 20,
-        marginBottom: 70, // Adjusted to make space for the footer
+        marginBottom: 100, 
     },
     card: {
         backgroundColor: 'white',
@@ -162,6 +162,6 @@ const styles = StyleSheet.create({
     cardTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 50,
     },
 })

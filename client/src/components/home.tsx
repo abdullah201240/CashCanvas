@@ -9,6 +9,7 @@ const Home = (props: any) => {
   const { user } = props.route.params;
   const [amount, setAmount] = useState('');
   const [dailyTransactions, setDailyTransactions] = useState({});
+  const [image, setImage] = useState('');
 
   const totalemount = async () => {
     try {
@@ -40,12 +41,32 @@ const Home = (props: any) => {
       console.error('Error fetching daily transactions:', error);
     }
   };
+  const fetchProfile = async () => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/Profile`, {
+            params: {
+                email: user.email,
+            },
+        });
+        console.log(response.data);
+
+        if (!response) {
+            throw new Error('No account types found');
+        }
+
+        
+        setImage(response.data.photo);
+    } catch (error) {
+        console.error('Error fetching account types:', error);
+    }
+};
 
   useEffect(() => {
 
     if (user && user.email) {
       totalemount();
       fetchDailyTransactions();
+      fetchProfile();
 
     }
   }, [user]);
@@ -53,6 +74,8 @@ const Home = (props: any) => {
     React.useCallback(() => {
       totalemount();
       fetchDailyTransactions();
+      fetchProfile();
+
 
     }, [])
   );
@@ -63,11 +86,13 @@ const Home = (props: any) => {
 
       <View style={[styles.navbar, { backgroundColor: 'green' }]}>
         <View style={styles.leftNavbar}>
+          <TouchableOpacity onPress={() => props.navigation.navigate('Profile', { user })}>
           {user.photo === "photo" ? (
-            <Image style={[styles.logo, styles.roundedImage]} source={require("../../assets/user.png")} />
+            <Image style={[ styles.roundedImage]} source={require("../../assets/user.png")} />
           ) : (
-            <Image style={[styles.logo, styles.roundedImage]} source={require("../../assets/logo.png")} />
+            <Image style={[ styles.roundedImage]} source={{ uri: `${API_BASE_URL}/${image}` }} />
           )}
+          </TouchableOpacity>
 
           <View style={styles.nameAndAmount}>
             <Text style={{ fontSize: 20, color: "white" }}>{user.name}</Text>
@@ -296,7 +321,12 @@ const styles = StyleSheet.create({
 
   },
   roundedImage: {
-    borderRadius: 50,
+    width: 50,
+    height: 50,
+    resizeMode: 'cover',
+    borderRadius: 100, 
+    marginBottom: 10,
+    marginTop: 30,
   },
 
 
