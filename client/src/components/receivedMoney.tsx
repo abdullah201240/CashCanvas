@@ -1,10 +1,23 @@
-import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
+import { Dropdown } from 'react-native-element-dropdown';
+import axios, { AxiosError } from 'axios';
 import { API_BASE_URL } from './config';
 
 const ReceivedMoney = (props: any) => {
     const { user } = props.route.params;
+    const [pin, setPin] = useState('');
+    const [isFocus1, setIsFocus1] = useState(false);
+    const [value1, setValue1] = useState<{ cardType: string; cardNumber: string } | null>(null);
+    interface AccountType {
+        label: string;
+        value: {
+            cardType: string;
+            cardNumber: string;
+        };
+    }
+    const [accountTypes, setAccountTypes] = useState<AccountType[]>([]);
+
     interface HistoryType {
         transactionType: string;
         transactionName: string;
@@ -31,15 +44,92 @@ const ReceivedMoney = (props: any) => {
                 console.error('Error fetching account types:', error);
             }
         };
+        const fetchAllAccount = async () => {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/AllAccount`, {
+                    params: {
+                        email: user.email,
+                    },
+                });
+
+                if (!response.data.accounts.length) {
+                    throw new Error('No account types found');
+                }
+
+                const accountData: AccountType[] = response.data.accounts.map((account: { cardType: string, cardNumber: string }) => ({
+                    label: `${account.cardType} (${account.cardNumber})`,
+                    value: { cardType: account.cardType, cardNumber: account.cardNumber }
+                }));
+                setAccountTypes(accountData);
+            } catch (error) {
+                console.error('Error fetching account types:', error);
+            }
+        };
 
         if (user && user.email) {
             fetchAccountTypes();
+            fetchAllAccount();
         }
     }, [user]);
     
-    const handleAddMoney = async () => {
+
+    const handleAddMoney = async (amount: string,) => {
+        if (user.password === pin) {
+            
+
+            try {
+
+                const response = await axios.post(`${API_BASE_URL}/AllTransaction`, {
+                    transactionType:"Add Money",
+                    transactionName:value1?.cardNumber,
+                    email: user.email,
+                    cardNumber: value1?.cardNumber,
+                    cardType: value1?.cardType,
+                    ammount:amount
+                    
+                     
+                });
+                console.log(response.status)
+
+                if (response.status === 201) {
+                    Alert.alert('Success', 'Money add successful');
+                    props.navigation.navigate('Home', { user });
+                }
+                else {
+                    Alert.alert('Error', 'Insufficient balance');
+                }
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    const axiosError: AxiosError = error;
+                    if (axiosError.response?.status === 400) {
+                        Alert.alert('Error', 'Insufficient balance');
+                    } else {
+                        Alert.alert('Error', 'Money add failed. Please try again later.');
+                    }
+                  } else {
+                    Alert.alert('Error', 'Money add failed. Please try again later.');
+                }
 
 
+
+
+
+
+
+
+                
+            }
+        } else {
+            Alert.alert('Error', 'Wrong PIN');
+        }
+        if (value1 && typeof value1 === 'object') {
+            console.log(value1.cardType);
+            console.log(value1.cardNumber);
+        }
+        console.log(pin);
+        console.log(amount);
+        console.log(user.email);
+        console.log(user.password);
     }
 
     return (
@@ -61,7 +151,28 @@ const ReceivedMoney = (props: any) => {
                         <Text>Received Number: {history.cardNumber}</Text>
                         <Text>Card Type: {history.cardType}</Text>
                         <Text>Amount: {history.ammount}</Text>
-                        <TouchableOpacity style={styles.deleteButton} onPress={() => handleAddMoney()}>
+                        <Dropdown
+                            style={[styles.dropdown, isFocus1 && { borderColor: 'blue' }]}
+                            data={accountTypes}
+                            labelField="label"
+                            valueField="value"
+                            placeholder={!isFocus1 ? 'Account' : '...'}
+                            value={value1 ? { label: `${value1.cardType} (${value1.cardNumber})`, value: value1 } : null}
+                            onFocus={() => setIsFocus1(true)}
+                            onBlur={() => setIsFocus1(false)}
+                            onChange={(item: { label: string, value: { cardType: string, cardNumber: string } }) => {
+                                setValue1(item.value);
+                                setIsFocus1(false);
+                            }}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="PIN"
+                            secureTextEntry
+                            value={pin}
+                            onChangeText={setPin}
+                        />
+                        <TouchableOpacity style={styles.deleteButton} onPress={() => handleAddMoney(history.ammount)}>
                             <Text style={styles.deleteButtonText}>Add Money</Text>
                         </TouchableOpacity>
                     </View>
@@ -151,7 +262,7 @@ const styles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 20,
         marginTop: 20,
-        marginBottom: 70, 
+        marginBottom: 70,
     },
     card: {
         backgroundColor: 'white',
@@ -182,5 +293,23 @@ const styles = StyleSheet.create({
     deleteButtonText: {
         color: 'white',
         fontWeight: 'bold',
+    },
+    dropdown: {
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 50,
+        marginBottom: 10,
+        paddingHorizontal: 8,
+        width: 250,
+    },
+    input: {
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 1,
+        marginBottom: 10,
+        paddingHorizontal: 10,
+        borderRadius: 40,
+        width: 350,
     },
 })
