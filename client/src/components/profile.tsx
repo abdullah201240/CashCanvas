@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     },
     footerIcon: {
         width: 30,
-        height: 30,
+        height: 35,
         resizeMode: 'contain',
     },
 });
