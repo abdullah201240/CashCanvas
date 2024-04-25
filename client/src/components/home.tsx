@@ -115,8 +115,12 @@ const Home = (props: any) => {
         </View>
         <View style={styles.optionsRow}>
           <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/recived_money.png")} />
+
+          <TouchableOpacity onPress={() => props.navigation.navigate('ReceivedMoney', { user })}>
+          <Image style={[styles.logo, { marginLeft: 22 }]}source={require("../../assets/recived_money.png")} />
             <Text>Received Money</Text>
+            </TouchableOpacity>
+            
           </View>
           <View style={styles.option}>
             <TouchableOpacity onPress={() => props.navigation.navigate('Paybill', { user })}>

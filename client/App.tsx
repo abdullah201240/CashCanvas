@@ -12,6 +12,7 @@ import MakePayment from './src/components/makePayment';
 import DisplayAllAccount from './src/components/displayAllAccount';
 import History from './src/components/history';
 import SentMoney from './src/components/sentMoney';
+import ReceivedMoney from './src/components/receivedMoney';
 const Stack = createStackNavigator();
 
 
@@ -31,6 +32,8 @@ export default function App() {
         <Stack.Screen name="History" component={History} options={{ headerShown: false }}  />
         
         <Stack.Screen name="SentMoney" component={SentMoney} options={{ headerShown: false }}  />
+        
+        <Stack.Screen name="ReceivedMoney" component={ReceivedMoney} options={{ headerShown: false }}  />
 
       </Stack.Navigator>
     </NavigationContainer>
