@@ -344,17 +344,13 @@ const RegularCost = async (req: Request, res: Response) => {
             createdAt: { $gte: startOfToday, $lt: endOfToday }
         });
 
-        const dailyTransactions = {};
+        let totalCost = 0;
 
         transactions.forEach(transaction => {
-            const date = transaction._id.getTimestamp().toISOString().split('T')[0];
-            if (!dailyTransactions[date]) {
-                dailyTransactions[date] = 0;
-            }
-            dailyTransactions[date] += parseFloat(transaction.ammount);
+            totalCost += parseFloat(transaction.ammount);
         });
 
-        return res.status(200).json({ dailyTransactions });
+        return res.status(200).json({ totalCost });
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error' });
     }
