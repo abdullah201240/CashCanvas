@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 
-import {Signup,Login,AddCards,AllAccount,AllTransaction,AllAmount,DeleteAccount,AllCost,History,RecivedMoney} from '../controller/usercontroller'
+import {Signup,Login,AddCards,AllAccount,AllTransaction,AllAmount,DeleteAccount,AllCost,History,RecivedMoney,MoneyADD} from '../controller/usercontroller'
 const router = express.Router();
 router.use(cors());
 
@@ -23,6 +23,8 @@ router.get('/AllCost', AllCost);
 router.get('/History', History);
 
 router.get('/RecivedMoney', RecivedMoney);
+router.get('/MoneyADD', MoneyADD);
+
 
 
 export default router;

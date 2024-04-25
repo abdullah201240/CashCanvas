@@ -114,7 +114,7 @@ const AllTransaction = async (req: Request, res: Response) => {
             }
         }
 
-        const account = await AddCard.findOne({ email, cardType });
+        const account = await AddCard.findOne({ email, cardType ,cardNumber });
 
         if (!account) {
             return res.status(404).json({ error: 'Account not found' });
@@ -220,6 +220,32 @@ const RecivedMoney = async (req: Request, res: Response) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 }
+const MoneyADD = async (req: Request, res: Response) => {
+    try {
+
+        const { transactionType, transactionName, email, cardNumber, cardType, ammount } = req.body;
+        if (!transactionType || !transactionName || !email || !cardNumber || !cardType || !ammount) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+        const account = await AddCard.findOne({ email, cardType ,cardNumber });
+        const newBalance = parseInt(account.ammount) + parseInt(ammount);
+        await AddCard.findOneAndUpdate({ email, cardType, cardNumber }, { $set: { ammount: newBalance } });
+
+
+        const newTransaction = new Transaction({ transactionType, transactionName, cardNumber, cardType, ammount, email });
+        await newTransaction.save();
+        return res.status(201).json({ message: 'Transaction successful' });
+
+        
+    } catch (error) {
+
+        return res.status(500).json({ message: 'Internal server error' });
+
+    }
+
+        
+
+}
 
 
 
@@ -231,4 +257,4 @@ const RecivedMoney = async (req: Request, res: Response) => {
 
 
 
-export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount, DeleteAccount, AllCost, History , RecivedMoney};
+export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount, DeleteAccount, AllCost, History , RecivedMoney ,MoneyADD};
