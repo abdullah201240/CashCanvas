@@ -122,14 +122,7 @@ const ReceivedMoney = (props: any) => {
         } else {
             Alert.alert('Error', 'Wrong PIN');
         }
-        if (value1 && typeof value1 === 'object') {
-            console.log(value1.cardType);
-            console.log(value1.cardNumber);
-        }
-        console.log(pin);
-        console.log(amount);
-        console.log(user.email);
-        console.log(user.password);
+        
     }
 
     return (
@@ -310,6 +303,6 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         paddingHorizontal: 10,
         borderRadius: 40,
-        width: 350,
+        width: 250,
     },
 })
