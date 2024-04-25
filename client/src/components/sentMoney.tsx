@@ -92,8 +92,6 @@ const SentMoney = (props: any) => {
                         },
                     });
                     const finalcost = parseInt(response.data.totalCost) + parseInt(amount);
-                    console.log(finalcost)
-                    console.log(dailyamount)
 
 
                     if (finalcost > dailyamount) {
