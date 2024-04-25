@@ -7,6 +7,7 @@ interface TransactionDocument extends Document {
     ammount: string;
     email: string;
     cardNumber: string;
+    status: string;
 
     
 }
@@ -33,6 +34,11 @@ const transactionSchema = new Schema<TransactionDocument>({
         type: String,
         required: true
     },
+    status: {
+        type: String,
+        default:" "
+    },
+
     
     email: {
         type: String,
