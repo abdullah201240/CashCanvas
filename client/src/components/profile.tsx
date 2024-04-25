@@ -3,11 +3,12 @@ import React, { useEffect, useState } from 'react'
 import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
 import { API_BASE_URL } from './config';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Profile = (props: any) => {
     const { user } = props.route.params;
 
-    const apiUrl =`${API_BASE_URL}/UpateProfileImage`;
+    const apiUrl =`${API_BASE_URL}/UpdateProfileImage`;
     const [image, setImage] = useState('');
     const [profile, setProfile] = useState<Profile | null>(null);
     const [name, setName] = useState('');
@@ -23,37 +24,45 @@ const Profile = (props: any) => {
         nid: string;
         photo: string;
     }
+    const fetchProfile = async () => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/Profile`, {
+                params: {
+                    email: user.email,
+                },
+            });
+            console.log(response.data);
+
+            if (!response) {
+                throw new Error('No account types found');
+            }
+
+            setProfile(response.data);
+            setName(response.data.name);
+            setAddress(response.data.address);
+            setSalary(response.data.salary);
+            setSaving(response.data.saving);
+            setImage(response.data.photo);
+        } catch (error) {
+            console.error('Error fetching account types:', error);
+        }
+    };
 
     useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const response = await axios.get(`${API_BASE_URL}/Profile`, {
-                    params: {
-                        email: user.email,
-                    },
-                });
-                console.log(response.data);
-
-                if (!response) {
-                    throw new Error('No account types found');
-                }
-
-                setProfile(response.data);
-                setName(response.data.name);
-                setAddress(response.data.address);
-                setSalary(response.data.salary);
-                setSaving(response.data.saving);
-            } catch (error) {
-                console.error('Error fetching account types:', error);
-            }
-        };
+      
 
         if (user && user.email) {
             fetchProfile();
         }
     }, [user]);
+    useFocusEffect(
+        React.useCallback(() => {
+            fetchProfile();
+    
+        }, [])
+      );
 
-    const pickSomething = async () => {
+      const pickSomething = async () => {
         try {
             const docRes = await DocumentPicker.getDocumentAsync({
                 type: "image/*",
@@ -62,7 +71,7 @@ const Profile = (props: any) => {
             const assets = docRes.assets;
             if (!assets) return;
             const file = assets[0];
-
+    
             const imageFile = {
                 name: file.name,
                 uri: file.uri,
@@ -71,7 +80,7 @@ const Profile = (props: any) => {
             };
             formData.append("email", user.email);
             formData.append("photo", imageFile as any);
-
+    
             const axiosConfig = {
                 headers: {
                     Accept: "application/json",
@@ -79,8 +88,7 @@ const Profile = (props: any) => {
                 },
             };
             const response = await axios.put(apiUrl, formData, axiosConfig);
-
-            setImage(response.data.image);
+    
             if (response.status === 200) {
                 Alert.alert('Success', 'Profile updated successfully');
                 const response = await axios.get(`${API_BASE_URL}/Profile`, {
@@ -88,14 +96,26 @@ const Profile = (props: any) => {
                         email: user.email,
                     },
                 });
+                console.log(response.data);
+    
                 if (!response) {
                     throw new Error('No account types found');
                 }
+    
+                setProfile(response.data);
+                setName(response.data.name);
+                setAddress(response.data.address);
+                setSalary(response.data.salary);
+                setSaving(response.data.saving);
+                setImage(response.data.photo);
+               
             }
         } catch (error) {
             console.error("Error while selecting file: ", error);
         }
     }
+    
+    
 
     const handleNameChange = (text: string) => {
         setName(text);
@@ -146,7 +166,7 @@ const Profile = (props: any) => {
             </View>
 
             <View style={styles.contentContainer}>
-                {profile && <Image style={styles.img} source={{ uri: `${API_BASE_URL}/${profile.photo}`}} />}
+                {profile && <Image style={styles.img} source={{ uri: `${API_BASE_URL}/${image}`}} />}
                 <TouchableOpacity style={styles.buttonContainer} onPress={pickSomething}>
                     <Text style={styles.buttonText}>Set Image</Text>
                 </TouchableOpacity>
