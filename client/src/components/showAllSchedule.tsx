@@ -109,7 +109,7 @@ const ShowAllSchedule = (props: any) => {
                         <Text>History</Text>
                     </TouchableOpacity>
                     
-                    <TouchableOpacity style={styles.footerOption}>
+                    <TouchableOpacity style={styles.footerOption} onPress={() => props.navigation.navigate('ShowAllSchedule', { user })}>
                         <Image style={styles.logo} source={require("../../assets/schedule.png")} />
                         <Text>Schedule</Text>
                     </TouchableOpacity>

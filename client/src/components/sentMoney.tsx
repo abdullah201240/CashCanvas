@@ -147,19 +147,19 @@ const SentMoney = (props: any) => {
 
         return token;
     }
-    
+
     const handleSentMoney = async () => {
         if (user.password === pin) {
             try {
                 const nsaving = parseInt(saving);
                 const nsalary = parseInt(salary);
-    
+
                 if (!isNaN(nsaving) && !isNaN(nsalary)) {
                     const newper = nsaving / 100;
                     const newsalary = nsalary * newper;
                     const updatesalary = nsalary - newsalary;
                     const dailyamount = updatesalary / 30;
-                    
+
                     const response = await axios.get(`${API_BASE_URL}/RegularCost`, {
                         params: {
                             email: user.email,
@@ -203,7 +203,7 @@ const SentMoney = (props: any) => {
             Alert.alert('Error', 'Wrong PIN');
         }
     };
-    
+
     const sendMoney = async () => {
         const response = await axios.post(`${API_BASE_URL}/AllTransaction`, {
             transactionType: "Sent money",
@@ -211,41 +211,41 @@ const SentMoney = (props: any) => {
             email: user.email,
             cardNumber: value1?.cardNumber,
             cardType: value1?.cardType,
-            ammount: amount 
+            ammount: amount
         });
         if (response.status === 201) {
             await Notifications.scheduleNotificationAsync({
                 content: {
-                  title: "Sent Money ",
-                  body: 'Sent Money successfully',
-                  
+                    title: "Sent Money ",
+                    body: 'Sent Money successfully',
+
                 },
                 trigger: { seconds: 2 },
-              });
+            });
             Alert.alert('Success', 'Sent Money successful');
             props.navigation.navigate('Home', { user });
         } else {
             Alert.alert('Error', 'Insufficient balance');
         }
     };
-    
 
-const handlePaymentError = (error: unknown) => {
-    if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError;
-        if (axiosError.response?.status === 400) {
-            Alert.alert('Error', 'Insufficient balance');
-        } else if (axiosError.response?.status === 404) {
-            Alert.alert('Error', 'User Not Found');
-        } else {
+
+    const handlePaymentError = (error: unknown) => {
+        if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError;
+            if (axiosError.response?.status === 400) {
+                Alert.alert('Error', 'Insufficient balance');
+            } else if (axiosError.response?.status === 404) {
+                Alert.alert('Error', 'User Not Found');
+            } else {
+                Alert.alert('Error', 'Payment failed. Please try again later.');
+            }
+        } else if (error instanceof Error) {
             Alert.alert('Error', 'Payment failed. Please try again later.');
+        } else {
+            Alert.alert('Error', 'An unknown error occurred. Please try again later.');
         }
-    } else if (error instanceof Error) {
-        Alert.alert('Error', 'Payment failed. Please try again later.');
-    } else {
-        Alert.alert('Error', 'An unknown error occurred. Please try again later.');
-    }
-};
+    };
 
 
 
@@ -327,10 +327,12 @@ const handlePaymentError = (error: unknown) => {
 
 
                     <View style={styles.option}>
-                        <Image style={styles.logo} source={require("../../assets/schedule.png")} />
-                        <Text>Schedule</Text>
+                        <TouchableOpacity onPress={() => props.navigation.navigate('ShowAllSchedule', { user })}>
+                            <Image style={styles.logo} source={require("../../assets/schedule.png")} />
+                            <Text>Schedule</Text>
+                        </TouchableOpacity>
                     </View>
-                    
+
                 </View>
             </View>
 

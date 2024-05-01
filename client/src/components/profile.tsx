@@ -229,7 +229,7 @@ const Profile = (props: any) => {
                     <Text>History</Text>
                 </TouchableOpacity>
                 
-                <TouchableOpacity style={styles.footerItem}>
+                <TouchableOpacity style={styles.footerItem} onPress={() => props.navigation.navigate('ShowAllSchedule', { user })}>
                     <Image style={styles.footerIcon} source={require("../../assets/schedule.png")} />
                     <Text>Schedule</Text>
                 </TouchableOpacity>

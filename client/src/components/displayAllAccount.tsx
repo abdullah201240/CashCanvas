@@ -140,8 +140,10 @@ const DisplayAllAccount = (props: any) => {
           </View>
          
           <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/schedule.png")} />
+          <TouchableOpacity onPress={() => props.navigation.navigate('ShowAllSchedule', { user })}>
+          <Image style={styles.logo} source={require("../../assets/schedule.png")} />
             <Text>Schedule</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

@@ -234,12 +234,12 @@ const MakePayment = (props: any) => {
         if (response.status === 201) {
             await Notifications.scheduleNotificationAsync({
                 content: {
-                  title: "Payment ",
-                  body: 'Payment successfully',
-                  
+                    title: "Payment ",
+                    body: 'Payment successfully',
+
                 },
                 trigger: { seconds: 2 },
-              });
+            });
             Alert.alert('Success', 'Payment successful');
             props.navigation.navigate('Home', { user });
         } else {
@@ -342,10 +342,12 @@ const MakePayment = (props: any) => {
                     </View>
 
                     <View style={styles.option}>
-                        <Image style={styles.logo} source={require("../../assets/schedule.png")} />
-                        <Text>Schedule</Text>
+                        <TouchableOpacity onPress={() => props.navigation.navigate('ShowAllSchedule', { user })}>
+                            <Image style={styles.logo} source={require("../../assets/schedule.png")} />
+                            <Text>Schedule</Text>
+                        </TouchableOpacity>
                     </View>
-                    
+
                 </View>
             </View>
 

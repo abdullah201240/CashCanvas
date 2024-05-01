@@ -207,9 +207,12 @@ const AddCard = (props:any) => {
 
           </View>
          
-          <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/schedule.png")} />
+          <View style={styles.option} >
+
+            <TouchableOpacity onPress={() => props.navigation.navigate('ShowAllSchedule', { user })}>
+          <Image style={styles.logo} source={require("../../assets/schedule.png")} />
             <Text>Schedule</Text>
+            </TouchableOpacity>
           </View>
           
         </View>
