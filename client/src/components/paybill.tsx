@@ -230,6 +230,14 @@ const Paybill = (props: any) => {
             ammount: amount
         });
         if (response.status === 201) {
+            await Notifications.scheduleNotificationAsync({
+                content: {
+                  title: "Pay Bill ",
+                  body: 'Pay Bill successfully',
+                  
+                },
+                trigger: { seconds: 2 },
+              });
             Alert.alert('Success', 'Pay Bill successful');
             props.navigation.navigate('Home', { user });
         } else {
