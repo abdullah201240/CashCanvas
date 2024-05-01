@@ -1,8 +1,23 @@
-import { ScrollView, StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Alert } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { ScrollView, StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Alert, Platform } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import { Dropdown } from 'react-native-element-dropdown';
 import axios, { AxiosError } from 'axios';
 import { API_BASE_URL } from './config';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import { Subscription } from 'expo-notifications';
+interface NotificationData {
+    title: string;
+    body: string;
+    data: any;
+}
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+    }),
+});
 
 const SentMoney = (props: any) => {
     const { user } = props.route.params;
@@ -14,6 +29,10 @@ const SentMoney = (props: any) => {
     const [salary, setSalary] = useState('');
     const [saving, setSaving] = useState('');
 
+    const [expoPushToken, setExpoPushToken] = useState<string>('');
+    const [notification, setNotification] = useState<NotificationData | null>(null);
+    const notificationListener = useRef<Subscription>();
+    const responseListener = useRef<Subscription>();
 
     interface AccountType {
         label: string;
@@ -24,6 +43,18 @@ const SentMoney = (props: any) => {
     }
     const [accountTypes, setAccountTypes] = useState<AccountType[]>([]);
     useEffect(() => {
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+        notificationListener.current = Notifications.addNotificationReceivedListener(receivedNotification => {
+            const notificationData = receivedNotification.request.content.data as NotificationData | null;
+            if (notificationData) {
+                setNotification(notificationData);
+            }
+        });
+
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
+
         const fetchAccountTypes = async () => {
             try {
                 const response = await axios.get(`${API_BASE_URL}/AllAccount`, {
@@ -73,7 +104,50 @@ const SentMoney = (props: any) => {
             fetchAccountTypes();
             fetchProfile();
         }
+        return () => {
+            if (notificationListener.current) {
+                Notifications.removeNotificationSubscription(notificationListener.current);
+            }
+            if (responseListener.current) {
+                Notifications.removeNotificationSubscription(responseListener.current);
+            }
+        };
     }, [user]);
+    async function registerForPushNotificationsAsync(): Promise<string> {
+        let token = '';
+
+        if (Platform.OS === 'android') {
+            await Notifications.setNotificationChannelAsync('default', {
+                name: 'default',
+                importance: Notifications.AndroidImportance.MAX,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: '#FF231F7C',
+            });
+        }
+
+        if (Device.isDevice) {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification!');
+                return token;
+            }
+            const expoPushToken = await Notifications.getExpoPushTokenAsync({ projectId: '84a78ded-8058-4166-a96c-0420780afe6a' });
+            if (expoPushToken.data) {
+                token = expoPushToken.data;
+                console.log(token);
+            }
+        } else {
+            alert('Must use physical device for Push Notifications');
+        }
+
+        return token;
+    }
+    
     const handleSentMoney = async () => {
         if (user.password === pin) {
             try {
@@ -140,6 +214,14 @@ const SentMoney = (props: any) => {
             ammount: amount 
         });
         if (response.status === 201) {
+            await Notifications.scheduleNotificationAsync({
+                content: {
+                  title: "Sent Money ",
+                  body: 'Sent Money successfully',
+                  
+                },
+                trigger: { seconds: 2 },
+              });
             Alert.alert('Success', 'Sent Money successful');
             props.navigation.navigate('Home', { user });
         } else {
