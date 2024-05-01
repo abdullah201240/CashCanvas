@@ -213,7 +213,7 @@ const Home = (props: any) => {
           </View>
          
           <View style={styles.option}>
-          <TouchableOpacity onPress={() => props.navigation.navigate('Schedule', { user })}>
+          <TouchableOpacity onPress={() => props.navigation.navigate('ShowAllSchedule', { user })}>
           <Image style={styles.logo} source={require("../../assets/schedule.png")} />
             <Text>Schedule</Text>
             </TouchableOpacity>
