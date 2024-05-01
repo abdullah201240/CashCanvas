@@ -1,87 +1,176 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { Dropdown } from 'react-native-element-dropdown';
+import DateTimePicker from '@react-native-community/datetimepicker'; // Update import
+const data = [
+    { label: 'Once', value: 'Once' },
+    { label: 'Every Month', value: 'Every Month' },
+];
 
-const Schedule = (props:any) => {
+const Schedule = (props: any) => {
     const { user } = props.route.params;
+    const [name, setName] = useState('');
+    const [amount, setAmount] = useState('');
+    const [pin, setPin] = useState('');
+    const [value, setValue] = useState<string | null>(null);
+    const [date, setDate] = useState<Date | null>(new Date()); 
+
+    const handleAddCard = () => {
+        console.log(name)
+        console.log(amount)
+
+        console.log(pin)
+
+        console.log(value)
+
+        console.log(date)
+
+    };
+
+    const [isFocus, setIsFocus] = useState(false);
 
     return (
         <View style={styles.container}>
-            <View style={styles.navbar}>
-                <Text style={styles.headerText}>Schedule</Text>
-                <Image style={styles.logo} source={require('../../assets/logo1.png')} />
+            <View style={[styles.navbar, { backgroundColor: 'green' }]}>
+                <View style={styles.leftNavbar}>
+                    <Text style={{ color: 'white', fontSize: 50, paddingTop: 20 }}>Schedule</Text>
+                </View>
+                <View style={styles.rightNavbar}>
+                    <Image style={styles.logo} source={require('../../assets/logo1.png')} />
+                </View>
             </View>
 
+            <View style={styles.contentContainer}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Name"
+                    value={name}
+                    onChangeText={setName}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Amount"
+                    value={amount}
+                    onChangeText={setAmount}
+                />
+                <Text> Pick  date</Text>
+
+                <View style={styles.input1}>
+                    <DateTimePicker
+                        value={date || new Date()}
+                        mode="date"
+                        display="default"
+                        onChange={(event, selectedDate) => {
+                            const currentDate = selectedDate || date;
+                            setDate(currentDate);
+                        }}
+                    />
+                </View>
 
 
+                <Dropdown
+                    style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                    data={data}
+                    labelField="label"
+                    valueField="value"
+                    placeholder={!isFocus ? 'Notification Type' : '...'}
+                    value={value}
+                    onFocus={() => setIsFocus(true)}
+                    onBlur={() => setIsFocus(false)}
+                    onChange={(item) => {
+                        setValue(item.value);
+                        setIsFocus(false);
+                    }}
+                />
 
-            
-            <View style={styles.footer}>
-                <TouchableOpacity style={styles.footerItem} onPress={() => props.navigation.navigate('Home', { user })}>
-                    <Image style={styles.footerIcon} source={require("../../assets/home.png")} />
-                    <Text>Home</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="PIN"
+                    secureTextEntry
+                    value={pin}
+                    onChangeText={setPin}
+                />
+                <TouchableOpacity style={styles.buttonContainer} onPress={handleAddCard}>
+                    <Text style={styles.buttonText}>Add</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.footerItem} onPress={() => props.navigation.navigate('History', { user })}>
-                    <Image style={styles.footerIcon} source={require("../../assets/history.png")} />
-                    <Text>History</Text>
-                </TouchableOpacity>
+            </View>
 
-                <TouchableOpacity style={styles.footerItem}>
-                    <Image style={styles.footerIcon} source={require("../../assets/schedule.png")} />
-                    <Text>Schedule</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.footerItem}>
-                    <Image style={styles.footerIcon} source={require("../../assets/notifications.png")} />
-                    <Text>Inbox</Text>
-                </TouchableOpacity>
+            <View style={styles.footerContainer}>
+                <View style={styles.footerRow}>
+                    <View style={styles.footer}>
+                        <TouchableOpacity onPress={() => props.navigation.navigate('Home', { user })}>
+                            <Image style={styles.logo} source={require("../../assets/home.png")} />
+                            <Text>Home</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.option}>
+                        <TouchableOpacity onPress={() => props.navigation.navigate('History', { user })}>
+                            <Image style={styles.logo} source={require("../../assets/history.png")} />
+                            <Text>History</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.option}>
+                        <Image style={styles.logo} source={require("../../assets/schedule.png")} />
+                        <Text>Schedule</Text>
+                    </View>
+                    <View style={styles.option}>
+                        <Image style={styles.logo} source={require("../../assets/notifications.png")} />
+                        <Text>Inbox</Text>
+                    </View>
+                </View>
             </View>
         </View>
     )
 }
 
-export default Schedule
+export default Schedule;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
     },
     navbar: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
         paddingHorizontal: 20,
         paddingTop: 60,
-        backgroundColor: 'green',
+        fontSize: 80,
     },
-    headerText: {
-        color: 'white',
-        fontSize: 24,
+    leftNavbar: {
+        flexDirection: 'row',
+        marginLeft: 60,
     },
-    logo: {
-        width: 50,
-        height: 50,
-        resizeMode: 'contain',
+    rightNavbar: {
+        flexDirection: 'row',
+        marginLeft: 70,
+        marginTop: 29,
     },
     contentContainer: {
-        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 120,
         backgroundColor: 'white',
-        paddingHorizontal: 20,
-        paddingTop: 20,
     },
-    img: {
-        width: 100,
-        height: 100,
-        resizeMode: 'cover',
-        borderRadius: 50,
+    input: {
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 1,
         marginBottom: 10,
-        alignSelf: 'center',
+        paddingHorizontal: 10,
+        borderRadius: 40,
+        width: 350,
     },
-    scrollContent: {
-        flexGrow: 1,
+    input1: {
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 1,
+        marginBottom: 10,
+        paddingHorizontal: 10,
+        borderRadius: 40,
+        width: 350,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    buttonText: {
-        color: 'white',
-        fontSize: 18,
-    },
+    
     buttonContainer: {
         marginTop: 12,
         height: 50,
@@ -91,32 +180,58 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 50,
         marginBottom: 10,
-        alignSelf: 'center',
     },
-    input: {
+    buttonText: {
+        color: 'white',
+        fontSize: 18,
+    },
+    logo: {
+        width: 50,
+        height: 50,
+        resizeMode: 'contain',
+    },
+    datePicker: {
         height: 50,
         borderColor: 'gray',
         borderWidth: 1,
         marginBottom: 10,
         paddingHorizontal: 10,
         borderRadius: 40,
+        width: 350,
     },
-    footer: {
+
+    dropdown: {
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 50,
+        marginBottom: 10,
+        paddingHorizontal: 8,
+        width: 350,
+    },
+    footerContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        backgroundColor: '#fff',
+    },
+    footerRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        borderTopWidth: 1,
-        borderTopColor: '#ccc',
-        paddingHorizontal: 10,
-        paddingVertical: 15,
+        alignItems: 'flex-end',
+        flex: 1,
     },
-    footerItem: {
+    footer: {
         alignItems: 'center',
+        flex: 1,
+        marginHorizontal: 10,
+        paddingVertical: 20,
     },
-    footerIcon: {
-        width: 30,
-        height: 35,
-        resizeMode: 'contain',
+    option: {
+        alignItems: 'center',
+        flex: 1,
+        marginHorizontal: 5,
+        paddingVertical: 20,
     },
 });
