@@ -1,15 +1,75 @@
-import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
 import { API_BASE_URL } from './config';
 import { LineChart } from "react-native-chart-kit";
 import { useFocusEffect } from '@react-navigation/native';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import { Subscription } from 'expo-notifications';
+interface NotificationData {
+  title: string;
+  body: string;
+  data: any;
+}
+interface NotificationData {
+  _id: string;
+  name: string;
+  notification: string;
+  ammount: string;
+  email: string;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+  }),
+});
 const Home = (props: any) => {
   const { user } = props.route.params;
   const [amount, setAmount] = useState('');
   const [dailyTransactions, setDailyTransactions] = useState({});
   const [image, setImage] = useState('');
+  const [expoPushToken, setExpoPushToken] = useState<string>('');
+    const [notification, setNotification] = useState<NotificationData | null>(null);
+    const notificationListener = useRef<Subscription>();
+    const responseListener = useRef<Subscription>();
+
+    const Notificationstest = async () => {
+      try {
+        const response = await axios.get<NotificationData[]>(`${API_BASE_URL}/Notifications`, {
+          params: {
+            email: user.email,
+          },
+        });
+    
+        if (!response.data || response.data.length === 0) {
+          throw new Error('No data found');
+        }
+    
+        response.data.forEach(async (notification: NotificationData) => {
+          await Notifications.scheduleNotificationAsync({
+            content: {
+              title: notification.name,
+              body: `Reminder: ${notification.name} - Amount: ${notification.ammount}`,
+            },
+            trigger: { seconds: 2 }, 
+          });
+        });
+      } catch (error) {
+        console.error('Error scheduling notifications:', error);
+      }
+    };
+    
+    
+
 
   const totalemount = async () => {
     try {
@@ -61,13 +121,34 @@ const Home = (props: any) => {
 };
 
   useEffect(() => {
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+        notificationListener.current = Notifications.addNotificationReceivedListener(receivedNotification => {
+            const notificationData = receivedNotification.request.content.data as NotificationData | null;
+            if (notificationData) {
+                setNotification(notificationData);
+            }
+        });
+
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
+
 
     if (user && user.email) {
       totalemount();
       fetchDailyTransactions();
       fetchProfile();
+      Notificationstest();
 
     }
+    return () => {
+      if (notificationListener.current) {
+          Notifications.removeNotificationSubscription(notificationListener.current);
+      }
+      if (responseListener.current) {
+          Notifications.removeNotificationSubscription(responseListener.current);
+      }
+  };
   }, [user]);
   useFocusEffect(
     React.useCallback(() => {
@@ -76,8 +157,43 @@ const Home = (props: any) => {
       fetchProfile();
 
 
+
     }, [])
   );
+  async function registerForPushNotificationsAsync(): Promise<string> {
+    let token = '';
+
+    if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+        });
+    }
+
+    if (Device.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
+            return token;
+        }
+        const expoPushToken = await Notifications.getExpoPushTokenAsync({ projectId: '84a78ded-8058-4166-a96c-0420780afe6a' });
+        if (expoPushToken.data) {
+            token = expoPushToken.data;
+            console.log(token);
+        }
+    } else {
+        alert('Must use physical device for Push Notifications');
+    }
+
+    return token;
+}
 
   return (
     <ScrollView style={styles.container}>

@@ -418,7 +418,6 @@ const Notifications = async (req, res) => {
         const today = new Date();
         const Allschedule = await Schedule.find({ email: email });
         
-        // Filter schedules based on notification type and date
         const filteredSchedules = Allschedule.filter(schedule => {
             if (schedule.notification === 'Every Month' && 
                 new Date(schedule.date).getDate() === today.getDate()) {
@@ -431,7 +430,6 @@ const Notifications = async (req, res) => {
             return false;
         });
         
-        // Sort filtered schedules by date
         filteredSchedules.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
         
         res.status(200).json(filteredSchedules);
