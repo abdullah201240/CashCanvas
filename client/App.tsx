@@ -14,6 +14,8 @@ import History from './src/components/history';
 import SentMoney from './src/components/sentMoney';
 import ReceivedMoney from './src/components/receivedMoney';
 import Profile from './src/components/profile';
+import Test from './src/components/test';
+import Schedule from './src/components/schedule';
 const Stack = createStackNavigator();
 
 
@@ -37,6 +39,9 @@ export default function App() {
         <Stack.Screen name="ReceivedMoney" component={ReceivedMoney} options={{ headerShown: false }}  />
         
         <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }}  />
+        
+        <Stack.Screen name="Test" component={Test} options={{ headerShown: false }}  />
+        <Stack.Screen name="Schedule" component={Schedule} options={{ headerShown: false }}  />
 
       </Stack.Navigator>
     </NavigationContainer>

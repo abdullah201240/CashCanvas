@@ -48,7 +48,6 @@ const Home = (props: any) => {
                 email: user.email,
             },
         });
-        console.log(response.data);
 
         if (!response) {
             throw new Error('No account types found');
@@ -214,8 +213,11 @@ const Home = (props: any) => {
           </View>
          
           <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/schedule.png")} />
+          <TouchableOpacity onPress={() => props.navigation.navigate('Schedule', { user })}>
+          <Image style={styles.logo} source={require("../../assets/schedule.png")} />
             <Text>Schedule</Text>
+            </TouchableOpacity>
+            
           </View>
           <View style={styles.option}>
             <Image style={styles.logo} source={require("../../assets/notifications.png")} />
