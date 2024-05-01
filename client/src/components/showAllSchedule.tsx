@@ -113,10 +113,7 @@ const ShowAllSchedule = (props: any) => {
                         <Image style={styles.logo} source={require("../../assets/schedule.png")} />
                         <Text>Schedule</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.footerOption}>
-                        <Image style={styles.logo} source={require("../../assets/notifications.png")} />
-                        <Text>Inbox</Text>
-                    </TouchableOpacity>
+                    
                 </View>
             </View>
 

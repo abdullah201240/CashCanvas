@@ -143,10 +143,6 @@ const DisplayAllAccount = (props: any) => {
             <Image style={styles.logo} source={require("../../assets/schedule.png")} />
             <Text>Schedule</Text>
           </View>
-          <View style={styles.option}>
-            <Image style={styles.logo} source={require("../../assets/notifications.png")} />
-            <Text>Inbox</Text>
-          </View>
         </View>
       </View>
 
