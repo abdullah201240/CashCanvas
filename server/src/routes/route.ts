@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import upload from '../middleware/upload';
-import {Signup,Login,AddCards,AllAccount,AllTransaction,AllAmount,DeleteAccount,AllCost,History,RecivedMoney,MoneyADD,UpdateProfileImage,Profile,UpdateProfile,RegularCost} from '../controller/usercontroller'
+import {Signup,Login,AddCards,AllAccount,AllTransaction,AllAmount,DeleteAccount,AllCost,History,RecivedMoney,MoneyADD,UpdateProfileImage,Profile,UpdateProfile,RegularCost,AddSchedule,ShowAllSchedule,DeleteSchedule} from '../controller/usercontroller'
 const router = express.Router();
 router.use(cors());
 
@@ -31,6 +31,10 @@ router.put('/UpdateProfile', UpdateProfile);
 
 router.get('/RegularCost', RegularCost);
 
+router.post('/AddSchedule', AddSchedule);
+
+router.get('/ShowAllSchedule', ShowAllSchedule);
+router.delete('/DeleteSchedule', DeleteSchedule);
 
 
 export default router;

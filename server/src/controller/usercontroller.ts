@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import AddCard from "../model/addCard";
 import Transaction from "../model/transaction";
+import Schedule from "../model/addSchedule";
 const defaultSecretKey = crypto.randomBytes(32).toString('hex');
 
 import bcrypt from 'bcrypt';
@@ -356,14 +357,59 @@ const RegularCost = async (req: Request, res: Response) => {
     }
 };
 
+const AddSchedule = async (req: Request, res: Response) => {
+    try {
+        const { email, name, notification, ammount , date} = req.body;
+
+        if (!email || !name || !notification || !ammount || !date) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+        const newSchedule = new Schedule({ email, name, ammount, notification ,date});
+        await newSchedule.save();
+
+        return res.status(201).json({ message: 'Schedule Add successfully' });
+    } catch (error) {
+        console.error('Error in Add Card:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 
 
 
 
+const ShowAllSchedule = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.query;
+
+        if (!email) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+
+        const Allschedule = await Schedule.find({ email: email });
+
+        return res.status(200).json({Allschedule});
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const DeleteSchedule = async (req: Request, res: Response) => {
+    try {
+        const { id, email } = req.query;
+        const schedule = await Schedule.findOneAndDelete({ _id:id, email });
+        if (schedule) {
+            return res.status(200).json({ message: 'Schedule deleted successfully' });
+        } else {
+            return res.status(404).json({ message: 'Schedule not found' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
 
 
 
 
-
-export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount, DeleteAccount, AllCost, History, RecivedMoney, MoneyADD, UpdateProfileImage,Profile,UpdateProfile ,RegularCost};
+export { Signup, Login, AddCards, AllAccount, AllTransaction, AllAmount, DeleteAccount, AllCost, History, RecivedMoney, MoneyADD, UpdateProfileImage,Profile,UpdateProfile ,RegularCost,AddSchedule,ShowAllSchedule,DeleteSchedule};
