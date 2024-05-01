@@ -1,7 +1,9 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
-import DateTimePicker from '@react-native-community/datetimepicker'; // Update import
+import DateTimePicker from '@react-native-community/datetimepicker'; 
+import axios from 'axios';
+import { API_BASE_URL } from './config';
 const data = [
     { label: 'Once', value: 'Once' },
     { label: 'Every Month', value: 'Every Month' },
@@ -15,15 +17,37 @@ const Schedule = (props: any) => {
     const [value, setValue] = useState<string | null>(null);
     const [date, setDate] = useState<Date | null>(new Date()); 
 
-    const handleAddCard = () => {
-        console.log(name)
-        console.log(amount)
+    const handleAddCard  = async () => {
+        if (user.password === pin) {
+            try {
 
-        console.log(pin)
+                const response = await axios.post(`${API_BASE_URL}/AddSchedule`, {
+                    email: user.email,
+                    name:name,
+                    notification: value,
+                    ammount:amount,
+                    date:date?.toISOString().split('T')[0]
+                     
+                });
+                            
 
-        console.log(value)
+                if (response) {
+                    Alert.alert('Success', 'Schedule added successfully');
+                    props.navigation.navigate('Home', { user });
+                } else {
+                    Alert.alert('Error', 'Schedule addition failed');
+                }
+            } catch (error) {
+                console.log(error)
+                Alert.alert('Error', 'Schedule addition failed. Please try again later.');
+            }
+        } else {
+            Alert.alert('Error', 'Wrong PIN');
+        
 
-        console.log(date)
+        }
+        
+
 
     };
 
@@ -53,7 +77,7 @@ const Schedule = (props: any) => {
                     value={amount}
                     onChangeText={setAmount}
                 />
-                <Text> Pick  date</Text>
+               
 
                 <View style={styles.input1}>
                     <DateTimePicker
